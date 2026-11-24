@@ -1,0 +1,18 @@
+{%- comment -%}
+  QG Bags — mostra un'immagine.
+  Ordine: 1) l'immagine scelta nell'editor (image), 2) il file predefinito
+  nella cartella assets del tema (file), 3) un riquadro segnaposto.
+
+  Parametri: image, file, alt, sizes, loading, placeholder
+{%- endcomment -%}
+{%- liquid
+  assign carica = loading | default: 'lazy'
+  assign misure = sizes | default: '100vw'
+-%}
+{%- if image != blank -%}
+  {{ image | image_url: width: 1600 | image_tag: loading: carica, sizes: misure, widths: '400, 600, 800, 1200, 1600' }}
+{%- elsif file != blank -%}
+  <img src="{{ file | asset_url }}" alt="{{ alt | escape }}" loading="{{ carica }}" decoding="async">
+{%- else -%}
+  <div class="qg-segnaposto">{{ placeholder | default: 'image' | placeholder_svg_tag }}</div>
+{%- endif -%}

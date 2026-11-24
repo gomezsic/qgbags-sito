@@ -9,11 +9,11 @@
         assign chiave = 'foto_' | append: i
         assign foto = section.settings[chiave]
       -%}
-      {%- if foto != blank -%}
-        {{ foto | image_url: width: 1200 | image_tag: loading: 'eager', sizes: '(min-width: 750px) 33vw, 100vw', widths: '400, 600, 800, 1200', alt: foto.alt }}
-      {%- else -%}
-        <div class="qg-segnaposto">{{ 'lifestyle-1' | placeholder_svg_tag }}</div>
-      {%- endif -%}
+      {%- liquid
+        assign chiave_file = 'foto_' | append: i | append: '_file'
+        assign chiave_alt = 'foto_' | append: i | append: '_alt'
+        render 'qg-immagine', image: foto, file: section.settings[chiave_file], alt: section.settings[chiave_alt], loading: 'eager', sizes: '(min-width: 750px) 33vw, 100vw', placeholder: 'lifestyle-1'
+      -%}
     {%- endfor -%}
   </div>
   <div class="qg-hero__velo" aria-hidden="true"></div>
@@ -52,6 +52,13 @@
     { "type": "image_picker", "id": "foto_1", "label": "Foto 1 (sinistra; su telefono è l'unica)" },
     { "type": "image_picker", "id": "foto_2", "label": "Foto 2 (centro)" },
     { "type": "image_picker", "id": "foto_3", "label": "Foto 3 (destra)" },
+    { "type": "header", "content": "Foto predefinite nel tema", "info": "Si usano solo se sopra non scegli un'immagine." },
+    { "type": "text", "id": "foto_1_file", "label": "File foto 1" },
+    { "type": "text", "id": "foto_1_alt", "label": "Descrizione foto 1" },
+    { "type": "text", "id": "foto_2_file", "label": "File foto 2" },
+    { "type": "text", "id": "foto_2_alt", "label": "Descrizione foto 2" },
+    { "type": "text", "id": "foto_3_file", "label": "File foto 3" },
+    { "type": "text", "id": "foto_3_alt", "label": "Descrizione foto 3" },
     { "type": "range", "id": "velo", "label": "Velo scuro sulle foto", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 40 },
     { "type": "range", "id": "altezza", "label": "Altezza su computer", "min": 480, "max": 900, "step": 20, "unit": "px", "default": 720 },
     { "type": "text", "id": "titolo", "label": "Titolo", "default": "Intelligenza Artigianale" },

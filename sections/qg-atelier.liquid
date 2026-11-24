@@ -3,11 +3,7 @@
 {%- endcomment -%}
 <section class="qg qg-atelier">
   <div class="qg-atelier__foto">
-    {%- if section.settings.immagine != blank -%}
-      {{ section.settings.immagine | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 900px) 50vw, 100vw', widths: '600, 900, 1200, 1400' }}
-    {%- else -%}
-      <div class="qg-segnaposto">{{ 'detailed-apparel-1' | placeholder_svg_tag }}</div>
-    {%- endif -%}
+    {%- render 'qg-immagine', image: section.settings.immagine, file: section.settings.file, alt: section.settings.alt, sizes: '(min-width: 900px) 50vw, 100vw', placeholder: 'detailed-apparel-1' -%}
   </div>
   <div class="qg-atelier__testo">
     {%- if section.settings.occhiello != blank -%}<span class="qg-occhiello">{{ section.settings.occhiello }}</span>{%- endif -%}
@@ -35,6 +31,8 @@
   "tag": "div",
   "settings": [
     { "type": "image_picker", "id": "immagine", "label": "Foto" },
+    { "type": "text", "id": "file", "label": "File predefinito nel tema", "info": "Si usa solo se non scegli una foto." },
+    { "type": "text", "id": "alt", "label": "Descrizione della foto" },
     { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "FATTE A MANO" },
     { "type": "text", "id": "titolo", "label": "Titolo", "default": "Un atelier, un gesto, una borsa alla volta" },
     { "type": "richtext", "id": "testo", "label": "Testo", "default": "<p>È l'unico modo in cui sappiamo fare le nostre borse: a mano, una per una. Tutte lavabili in lavatrice a 30 gradi.</p>" },

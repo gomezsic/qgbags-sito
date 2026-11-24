@@ -12,7 +12,13 @@
     "apertura": {
       "type": "qg-hero",
       "settings": {
-        "link": "#crea"
+        "link": "#crea",
+        "foto_1_file": "qg-hero-1.jpg",
+        "foto_1_alt": "Ragazza appoggiata a un muro di marmo con una Grace Bag in tramè",
+        "foto_2_file": "qg-hero-2.jpg",
+        "foto_2_alt": "Signora elegante a passeggio in città con un Borsino leopardato",
+        "foto_3_file": "qg-hero-3.jpg",
+        "foto_3_alt": "Ragazzo con un borsone in tramè army e manici a righe"
       }
     },
     "modelli": {
@@ -22,25 +28,33 @@
         "modelli_1": {
           "type": "modello",
           "settings": {
-            "nome": "TRAVEL BAG"
+            "nome": "TRAVEL BAG",
+            "file": "qg-modello-travel.jpg",
+            "alt": "Travel Bag in neoprene verdone appesa a una porta di legno"
           }
         },
         "modelli_2": {
           "type": "modello",
           "settings": {
-            "nome": "CITY BAG"
+            "nome": "CITY BAG",
+            "file": "qg-modello-city.jpg",
+            "alt": "City Bag in tramè army con manici a righe appesa a una porta di legno"
           }
         },
         "modelli_3": {
           "type": "modello",
           "settings": {
-            "nome": "GRACE"
+            "nome": "GRACE",
+            "file": "qg-modello-grace.jpg",
+            "alt": "Grace Bag in tramè con manici blu e panna appesa a una porta di legno"
           }
         },
         "modelli_4": {
           "type": "modello",
           "settings": {
-            "nome": "BEAUTY E POCHETTE"
+            "nome": "BEAUTY E POCHETTE",
+            "file": "qg-modello-beauty.jpg",
+            "alt": "Beauty Classic in neoprene petrolio davanti a una porta di legno"
           }
         }
       },
@@ -90,27 +104,87 @@
       "type": "qg-piu-amate",
       "settings": {
         "quanti": 4
-      }
+      },
+      "blocks": {
+        "piu_amate_1": {
+          "type": "esempio",
+          "settings": {
+            "file": "qg-amate-travel.jpg",
+            "nome": "TRAVEL BAG",
+            "descrizione": "Neoprene verdone · manico 11",
+            "prezzo": "162 €"
+          }
+        },
+        "piu_amate_2": {
+          "type": "esempio",
+          "settings": {
+            "file": "qg-amate-city.jpg",
+            "nome": "CITY BAG",
+            "descrizione": "Tramè army · manico 20",
+            "prezzo": "152 €"
+          }
+        },
+        "piu_amate_3": {
+          "type": "esempio",
+          "settings": {
+            "file": "qg-amate-grace.jpg",
+            "nome": "GRACE",
+            "descrizione": "Tramè · manico 29",
+            "prezzo": "135 €"
+          }
+        },
+        "piu_amate_4": {
+          "type": "esempio",
+          "settings": {
+            "file": "qg-amate-beauty.jpg",
+            "nome": "BEAUTY CLASSIC",
+            "descrizione": "Neoprene petrolio · manico 7",
+            "prezzo": "59 €"
+          }
+        }
+      },
+      "block_order": [
+        "piu_amate_1",
+        "piu_amate_2",
+        "piu_amate_3",
+        "piu_amate_4"
+      ]
     },
     "borsino": {
       "type": "qg-borsino",
-      "settings": {},
+      "settings": {
+        "video_file": "qg-borsino.mp4",
+        "copertina_file": "qg-borsino-copertina.jpg",
+        "video_alt": "Video animato del Borsino dei Libri in una grande biblioteca"
+      },
       "blocks": {
         "borsino_1": {
           "type": "foto",
-          "settings": {}
+          "settings": {
+            "file": "qg-borsino-1.jpg",
+            "alt": "Ragazza all'università con il Borsino dei Libri blu"
+          }
         },
         "borsino_2": {
           "type": "foto",
-          "settings": {}
+          "settings": {
+            "file": "qg-borsino-2.jpg",
+            "alt": "Borsino del Pilates viola in uno studio di pilates"
+          }
         },
         "borsino_3": {
           "type": "foto",
-          "settings": {}
+          "settings": {
+            "file": "qg-borsino-3.jpg",
+            "alt": "Donna che legge sul divano con il Borsino del Relax"
+          }
         },
         "borsino_4": {
           "type": "foto",
-          "settings": {}
+          "settings": {
+            "file": "qg-borsino-4.jpg",
+            "alt": "Borsino scozzese regalato a Natale sulla porta di casa"
+          }
         }
       },
       "block_order": [
@@ -122,11 +196,17 @@
     },
     "film": {
       "type": "qg-film",
-      "settings": {}
+      "settings": {
+        "video_file": "qg-film.mp4",
+        "copertina_file": "qg-film-copertina.jpg"
+      }
     },
     "atelier": {
       "type": "qg-atelier",
-      "settings": {}
+      "settings": {
+        "file": "qg-atelier.jpg",
+        "alt": "Pezzi di tessuto tagliati, cartamodello e manici sul tavolo da lavoro dell'atelier"
+      }
     },
     "newsletter": {
       "type": "qg-newsletter",
