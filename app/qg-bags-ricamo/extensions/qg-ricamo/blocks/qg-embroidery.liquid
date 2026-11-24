@@ -1,0 +1,160 @@
+{% liquid
+  assign enabled_tag = block.settings.enabled_tag | default: 'ricamo si'
+  assign legacy_enabled_tag = enabled_tag | replace: ' ', '-'
+  assign product_is_enabled = false
+
+  if product.tags contains enabled_tag
+    assign product_is_enabled = true
+  endif
+
+  if product.tags contains legacy_enabled_tag
+    assign product_is_enabled = true
+  endif
+
+  assign service_variant_id = block.settings.service_variant_id | strip
+  assign fonts = block.settings.fonts | default: 'Corsivo, Stampatello, Elegante'
+  assign max_length = block.settings.max_length | default: 20
+%}
+
+{% if product_is_enabled %}
+  <div
+    class="qg-embroidery"
+    data-qg-embroidery
+    data-service-variant-id="{{ service_variant_id | escape }}"
+    data-fonts="{{ fonts | escape }}"
+    data-max-length="{{ max_length }}"
+    data-price-label="{{ block.settings.price_label | escape }}"
+  >
+    <div class="qg-embroidery__head">
+      <label class="qg-embroidery__toggle">
+        <input class="qg-embroidery__checkbox" type="checkbox" data-qg-embroidery-toggle>
+        <span class="qg-embroidery__box" aria-hidden="true"></span>
+        <span class="qg-embroidery__title">
+          {{ block.settings.heading | default: 'Aggiungi ricamo' }}
+        </span>
+      </label>
+
+      {% if block.settings.price_label != blank %}
+        <span class="qg-embroidery__price">{{ block.settings.price_label }}</span>
+      {% endif %}
+    </div>
+
+    {% if block.settings.help_text != blank %}
+      <p class="qg-embroidery__help">{{ block.settings.help_text }}</p>
+    {% endif %}
+
+    <div class="qg-embroidery__panel" data-qg-embroidery-panel hidden>
+      <label class="qg-embroidery__field">
+        <span>Testo ricamo</span>
+        <input
+          class="qg-embroidery__input"
+          type="text"
+          maxlength="{{ max_length }}"
+          autocomplete="off"
+          placeholder="{{ block.settings.placeholder | escape }}"
+          data-qg-embroidery-text
+        >
+      </label>
+
+      <div class="qg-embroidery__field">
+        <span>Font</span>
+        <div class="qg-embroidery__fonts" data-qg-embroidery-fonts>
+          {% assign font_options = fonts | split: ',' %}
+          {% for font in font_options %}
+            {% assign font_label = font | strip %}
+            {% if font_label != blank %}
+              <label class="qg-embroidery__font">
+                <input
+                  type="radio"
+                  name="qg-embroidery-font-{{ section.id }}-{{ block.id }}"
+                  value="{{ font_label | escape }}"
+                  data-qg-embroidery-font
+                  {% if forloop.first %}checked{% endif %}
+                >
+                <span>{{ font_label }}</span>
+              </label>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <p class="qg-embroidery__note">
+        {{ block.settings.production_note | default: 'Il colore del ricamo viene abbinato da QG Bags al modello scelto.' }}
+      </p>
+    </div>
+
+    <p class="qg-embroidery__error" data-qg-embroidery-error role="alert" hidden></p>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Ricamo QG Bags",
+  "target": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "stylesheet": "qg-embroidery.css",
+  "javascript": "qg-embroidery.js",
+  "settings": [
+    {
+      "type": "text",
+      "id": "enabled_tag",
+      "label": "Tag prodotto abilitante",
+      "default": "ricamo si"
+    },
+    {
+      "type": "text",
+      "id": "service_variant_id",
+      "label": "Variant ID servizio ricamo",
+      "info": "ID della variante del prodotto Shopify 'Ricamo personalizzato'."
+    },
+    {
+      "type": "text",
+      "id": "price_label",
+      "label": "Testo prezzo",
+      "default": "+ €10"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titolo",
+      "default": "Aggiungi ricamo"
+    },
+    {
+      "type": "text",
+      "id": "help_text",
+      "label": "Testo descrittivo",
+      "default": "Personalizza la tua borsa con un nome o una parola."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder testo",
+      "default": "Es. Giulia"
+    },
+    {
+      "type": "text",
+      "id": "fonts",
+      "label": "Font disponibili",
+      "default": "Corsivo, Stampatello, Elegante",
+      "info": "Separati da virgola."
+    },
+    {
+      "type": "range",
+      "id": "max_length",
+      "label": "Numero massimo caratteri",
+      "min": 2,
+      "max": 40,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "text",
+      "id": "production_note",
+      "label": "Nota produzione",
+      "default": "Il colore del ricamo viene abbinato da QG Bags al modello scelto."
+    }
+  ]
+}
+{% endschema %}

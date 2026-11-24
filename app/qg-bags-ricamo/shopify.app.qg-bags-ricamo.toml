@@ -1,0 +1,19 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "8a0e259ed3f210cfe4476b7fb93f892a"
+application_url = "https://shopify.dev/apps/default-app-home"
+embedded = true
+name = "QG Bags Ricamo"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,write_products"
+
+[auth]
+redirect_urls = [ "https://shopify.dev/apps/default-app-home/api/auth" ]
+
+[webhooks]
+api_version = "2026-07"
+
+[build]
+automatically_update_urls_on_dev = true
