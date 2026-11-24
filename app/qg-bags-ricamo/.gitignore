@@ -2,3 +2,5 @@ node_modules/
 .shopify/
 # config della app V2 (qgbags-v2): resta solo sul Mac, vedi docs/ordine-su-misura.md
 shopify.app.qg-bags-ricamo-v2.toml
+extensions/*/dist/
+extensions/*/manifest.json
