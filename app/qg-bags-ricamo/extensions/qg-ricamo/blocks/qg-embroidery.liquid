@@ -1,15 +1,16 @@
 {% liquid
-  assign enabled_tag = block.settings.enabled_tag | default: 'ricamo si'
+  assign enabled_tag = block.settings.enabled_tag | default: 'ricamo si' | strip | downcase
   assign legacy_enabled_tag = enabled_tag | replace: ' ', '-'
   assign product_is_enabled = false
 
-  if product.tags contains enabled_tag
-    assign product_is_enabled = true
-  endif
-
-  if product.tags contains legacy_enabled_tag
-    assign product_is_enabled = true
-  endif
+  # Il tag vale anche con maiuscole diverse: "ricamo si", "Ricamo Si", "RICAMO SI", "ricamo-si"
+  for product_tag in product.tags
+    assign normalized_tag = product_tag | strip | downcase
+    if normalized_tag == enabled_tag or normalized_tag == legacy_enabled_tag
+      assign product_is_enabled = true
+      break
+    endif
+  endfor
 
   assign service_variant_id = block.settings.service_variant_id | strip
   assign fonts = block.settings.fonts | default: 'Corsivo, Stampatello, Elegante'
