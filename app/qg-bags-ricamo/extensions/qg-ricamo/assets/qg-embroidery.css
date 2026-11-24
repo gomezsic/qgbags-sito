@@ -1,0 +1,217 @@
+.qg-embroidery {
+  --qg-border: #d7d2c8;
+  --qg-text: #1f2428;
+  --qg-muted: #6f6a60;
+  --qg-bg: #ffffff;
+  --qg-soft: #f7f5f0;
+  --qg-accent: #092953;
+  --qg-error: #b3261e;
+  border: 1px solid var(--qg-border);
+  border-radius: 8px;
+  background: var(--qg-bg);
+  color: var(--qg-text);
+  margin: 18px 0;
+  padding: 16px;
+}
+
+.qg-embroidery,
+.qg-embroidery * {
+  box-sizing: border-box;
+}
+
+.qg-embroidery__head {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.qg-embroidery__toggle {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 10px;
+  min-width: 0;
+}
+
+.qg-embroidery__checkbox {
+  opacity: 0;
+  position: absolute;
+}
+
+.qg-embroidery__box {
+  align-items: center;
+  border: 1px solid var(--qg-border);
+  border-radius: 4px;
+  display: inline-flex;
+  flex: 0 0 20px;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+
+.qg-embroidery__box::after {
+  border-bottom: 2px solid #fff;
+  border-right: 2px solid #fff;
+  content: "";
+  height: 9px;
+  opacity: 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+  width: 5px;
+}
+
+.qg-embroidery__checkbox:checked + .qg-embroidery__box {
+  background: var(--qg-accent);
+  border-color: var(--qg-accent);
+}
+
+.qg-embroidery__checkbox:checked + .qg-embroidery__box::after {
+  opacity: 1;
+}
+
+.qg-embroidery__checkbox:focus-visible + .qg-embroidery__box {
+  outline: 2px solid var(--qg-accent);
+  outline-offset: 3px;
+}
+
+.qg-embroidery__title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.qg-embroidery__price {
+  background: var(--qg-soft);
+  border-radius: 999px;
+  color: var(--qg-accent);
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 7px 10px;
+}
+
+.qg-embroidery__help,
+.qg-embroidery__note,
+.qg-embroidery__error {
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 10px 0 0;
+}
+
+.qg-embroidery__help,
+.qg-embroidery__note {
+  color: var(--qg-muted);
+}
+
+.qg-embroidery__panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.qg-embroidery__field {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.qg-embroidery__field > span {
+  color: var(--qg-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.qg-embroidery__input {
+  appearance: none;
+  background: #fff;
+  border: 1px solid var(--qg-border);
+  border-radius: 6px;
+  color: var(--qg-text);
+  font: inherit;
+  min-height: 44px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.qg-embroidery__input:focus {
+  border-color: var(--qg-accent);
+  outline: 2px solid rgba(9, 41, 83, 0.18);
+  outline-offset: 0;
+}
+
+.qg-embroidery__fonts {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.qg-embroidery__font {
+  cursor: pointer;
+  min-width: 0;
+}
+
+.qg-embroidery__font input {
+  opacity: 0;
+  position: absolute;
+}
+
+.qg-embroidery__font span {
+  align-items: center;
+  border: 1px solid var(--qg-border);
+  border-radius: 6px;
+  display: flex;
+  font-size: 13px;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1.2;
+  min-height: 42px;
+  overflow-wrap: anywhere;
+  padding: 8px 9px;
+  text-align: center;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  width: 100%;
+}
+
+.qg-embroidery__font input:checked + span {
+  background: var(--qg-accent);
+  border-color: var(--qg-accent);
+  color: #fff;
+}
+
+.qg-embroidery__font input:focus-visible + span {
+  outline: 2px solid var(--qg-accent);
+  outline-offset: 3px;
+}
+
+.qg-embroidery__error {
+  color: var(--qg-error);
+  font-weight: 700;
+}
+
+.qg-embroidery.is-invalid {
+  border-color: #c77570;
+}
+
+.qg-embroidery.is-success {
+  border-color: #6f8f72;
+}
+
+.qg-embroidery.is-success .qg-embroidery__error {
+  color: #3d6f42;
+}
+
+@media (max-width: 520px) {
+  .qg-embroidery {
+    padding: 14px;
+  }
+
+  .qg-embroidery__head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .qg-embroidery__fonts {
+    grid-template-columns: 1fr;
+  }
+}
