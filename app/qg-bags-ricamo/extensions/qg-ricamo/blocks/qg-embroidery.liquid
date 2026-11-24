@@ -45,6 +45,24 @@
     {% endif %}
 
     <div class="qg-embroidery__panel" data-qg-embroidery-panel hidden>
+      {%- if block.settings.preview_enabled -%}
+        {%- if block.settings.preview_image != blank -%}
+          {%- assign preview_src = block.settings.preview_image | image_url: width: 1000 -%}
+        {%- else -%}
+          {%- assign preview_src = 'qg-modello-city.jpg' | asset_url -%}
+        {%- endif -%}
+        <div
+          class="qg-embroidery__preview"
+          data-qg-embroidery-preview-box
+          data-image="{{ preview_src }}"
+          data-color="{{ block.settings.preview_color | default: '#a84a3a' }}"
+          data-area="{{ block.settings.preview_area | default: '0.493, 0.70, 0.24, 0.09' | escape }}"
+        >
+          <canvas aria-label="Anteprima del ricamo sulla borsa"></canvas>
+          <p class="qg-embroidery__preview-note">Anteprima indicativa su borsa modello.</p>
+        </div>
+        <script src="{{ 'qg-embroidery-preview.js' | asset_url }}" defer></script>
+      {%- endif -%}
       <label class="qg-embroidery__field">
         <span>Testo ricamo</span>
         <input
@@ -149,6 +167,35 @@
       "max": 40,
       "step": 1,
       "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Anteprima del ricamo"
+    },
+    {
+      "type": "checkbox",
+      "id": "preview_enabled",
+      "label": "Mostra anteprima su borsa modello",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "preview_image",
+      "label": "Foto borsa modello",
+      "info": "Vuoto = City modello inclusa nell'app."
+    },
+    {
+      "type": "color",
+      "id": "preview_color",
+      "label": "Colore filo nell'anteprima",
+      "default": "#a84a3a"
+    },
+    {
+      "type": "text",
+      "id": "preview_area",
+      "label": "Zona del ricamo",
+      "default": "0.493, 0.70, 0.24, 0.09",
+      "info": "Centro X, centro Y, larghezza, altezza, in frazioni della foto (0-1)."
     },
     {
       "type": "text",
