@@ -23,10 +23,10 @@ Regola fissa: **qgbags.com non si tocca**. Tutto si prova sul negozio di svilupp
 | Ricamo nel carrello: borsa + riga "Ricamo personalizzato" 10 € | provato da Giacomo il 24/11 |
 | Anteprima del ricamo sulla City modello, filo rosso mattone, al centro tra i manici | provata da Giacomo il 24/11 ("fantastico") |
 
-| Pulsante "Nuovo ordine su misura" in Ordini > Altre azioni (anche in Ordini bozza) | app V2; da approvare i nuovi permessi e provare |
+| Modulo "Nuovo ordine su misura": si apre cliccando **QG Bags Ricamo V2** nel menu dell'admin (anche in Ordini, Ordini bozza e pagina cliente > Altre azioni) | app V2 versione v2-10, provato da Giacomo il 24/11 ("funziona") |
 
 **Step 1 (ricamo): quasi finito.** Manca solo l'anteprima sugli altri modelli.
-**Ordini fuori negozio: costruito**, campi allineati al gestionale (`app/qg-bags-ricamo/docs/ordine-su-misura.md`).
+**Ordini fuori negozio: funzionante**, campi allineati al gestionale (`app/qg-bags-ricamo/docs/ordine-su-misura.md`).
 
 ## Organizzazione
 
@@ -89,7 +89,7 @@ Regola fissa: **qgbags.com non si tocca**. Tutto si prova sul negozio di svilupp
 ## Prossimi passi
 1. **Foto dei modelli** pochette, beauty e borsa grande (fondo bianco, di fronte) per completare l'anteprima del ricamo per tag. Da confermare i nomi esatti dei tag.
 2. **Step 2 — Consegna**: opzioni e prezzi di spedizione, ritiro in showroom (indirizzo), giorni per pronta consegna e su misura, blocco "Tempi di consegna" in pagina prodotto (da confermare).
-3. **Ordini fuori negozio**: approvare i permessi dell'app e fare un ordine di prova. Poi, nel gestionale, la funzione che legge gli ordini Shopify (webhook → `qg_shopify_staging`), da approvare da Giacomo.
+3. **Ordini fuori negozio**: da decidere se aggiungere TELEFONO alle provenienze e se registrare in Shopify anche gli ordini CAMPIONI. Poi, nel gestionale, la funzione che legge gli ordini Shopify (webhook → `qg_shopify_staging`), da approvare da Giacomo.
 4. **Configuratore pilota** Travel Bag su qgbags-v2: prodotto nascosto, prezzo, tessuti e manici del pilota.
 5. **Nuovo video** (atteso il 25/11) da mettere nella home.
 6. Ordine di prova completo fino al checkout.
@@ -98,5 +98,5 @@ Regola fissa: **qgbags.com non si tocca**. Tutto si prova sul negozio di svilupp
 
 ## Storico delle modifiche al codice (PR su qgbags-sito)
 - #1 tema Horizon con sezioni QG · #2 app ricamo nel repo · #3 app adattata a Horizon · #4 tag "ricamo si" senza badare alle maiuscole
-- #10 pulsante "Nuovo ordine su misura" allineato al gestionale
+- #10 pulsante "Nuovo ordine su misura" allineato al gestionale · #11 accesso da cliente · #12 modulo come home dell'app
 - #5 home con collezioni vere e blocco ricamo · #6 ricamo nel carrello con Horizon · #7 anteprima ricamo sulla City · #8 anteprima più piccola, visibile e senza spazio vuoto
