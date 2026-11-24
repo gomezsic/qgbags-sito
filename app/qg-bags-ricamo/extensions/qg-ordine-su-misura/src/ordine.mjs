@@ -225,3 +225,12 @@ export function collectErrors(json, field) {
   }
   return out;
 }
+
+// Aperto dalla pagina di un cliente (Clienti > cliente > Altre azioni):
+// restituisce il gid del cliente selezionato, altrimenti null.
+export const TARGET_CLIENTE = 'admin.customer-details.action.render';
+export function preselectedCustomerId(target, data) {
+  if (target !== TARGET_CLIENTE) return null;
+  const id = data && Array.isArray(data.selected) && data.selected[0] && data.selected[0].id;
+  return typeof id === 'string' && id.startsWith('gid://shopify/Customer/') ? id : null;
+}
