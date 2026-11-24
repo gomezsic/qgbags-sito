@@ -99,7 +99,7 @@ test('findOrphanEmbroideryLines returns service lines whose bag group is missing
   assert.deepEqual(orphanLines, [1]);
 });
 
-test('refreshCartAfterAdd uses ajaxCart drawer when available', () => {
+test('refreshCartAfterAdd uses ajaxCart drawer when available (old themes)', async () => {
   let loaded = false;
   const previousWindow = global.window;
 
@@ -115,7 +115,7 @@ test('refreshCartAfterAdd uses ajaxCart drawer when available', () => {
   };
 
   try {
-    QGEmbroidery.refreshCartAfterAdd();
+    await QGEmbroidery.refreshCartAfterAdd([]);
     assert.equal(loaded, true);
     assert.equal(global.window.location.href, '');
   } finally {
@@ -145,4 +145,17 @@ test('addItems returns a local preview result without calling fetch in preview m
   } finally {
     global.fetch = previousFetch;
   }
+});
+
+test('toEventLines maps cart items to standard event lines', () => {
+  assert.deepEqual(
+    QGEmbroidery.toEventLines([
+      { id: 111, quantity: 2, properties: {} },
+      { id: '222', quantity: 0 }
+    ]),
+    [
+      { merchandiseId: '111', quantity: 2 },
+      { merchandiseId: '222', quantity: 1 }
+    ]
+  );
 });

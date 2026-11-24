@@ -195,6 +195,9 @@
         }
 
         var lines = findOrphanEmbroideryLines(cart.items);
+        if (!lines.length) {
+          return 0;
+        }
         return lines.reduceRight(function (promise, line) {
           return promise.then(function () {
             return fetch('/cart/change.js', {
@@ -206,14 +209,136 @@
               body: JSON.stringify({ line: line, quantity: 0 })
             });
           });
-        }, Promise.resolve());
+        }, Promise.resolve()).then(function () {
+          return lines.length;
+        });
       })
       .catch(function () {
-        return null;
+        return 0;
       });
   }
 
-  function refreshCartAfterAdd() {
+  // Temi nuovi (Horizon): eventi standard Shopify del carrello, dal modulo '@shopify/events'
+  // dichiarato nell'import map del tema. Nei temi vecchi il modulo non c'e' e si torna a null.
+  var standardEventsPromise = null;
+
+  function loadStandardEvents() {
+    if (standardEventsPromise) {
+      return standardEventsPromise;
+    }
+    if (typeof document === 'undefined' || !document.querySelector('script[type="importmap"]')) {
+      standardEventsPromise = Promise.resolve(null);
+      return standardEventsPromise;
+    }
+    try {
+      standardEventsPromise = import('@shopify/events')
+        .then(function (module) {
+          return module && module.CartLinesUpdateEvent ? module : null;
+        })
+        .catch(function () {
+          return null;
+        });
+    } catch (error) {
+      standardEventsPromise = Promise.resolve(null);
+    }
+    return standardEventsPromise;
+  }
+
+  function toEventLines(items) {
+    return (items || []).map(function (item) {
+      return { merchandiseId: String(item.id), quantity: toPositiveInteger(item.quantity, 1) };
+    });
+  }
+
+  // Avvisa il tema (cassetto del carrello, icona, pagina carrello) che il carrello e' cambiato.
+  function announceCartChange(events, source, action, lines) {
+    var deferred = events.CartLinesUpdateEvent.createPromise();
+    (source || document).dispatchEvent(
+      new events.CartLinesUpdateEvent({
+        action: action,
+        context: 'product',
+        lines: lines,
+        promise: deferred.promise
+      })
+    );
+    return fetch('/cart.js', { headers: { Accept: 'application/json' } })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (cart) {
+        deferred.resolve({
+          cart: events.CartLinesUpdateEvent.createCartFromAjaxResponse(cart),
+          detail: { items: cart.items, source: 'qg-ricamo', didError: false }
+        });
+      })
+      .catch(function (error) {
+        deferred.reject(error);
+      });
+  }
+
+  // Se il cliente toglie la borsa dal carrello, il ricamo collegato sparisce con lei.
+  var cartWatcherStarted = false;
+
+  function watchCartChanges() {
+    if (cartWatcherStarted || typeof document === 'undefined') {
+      return;
+    }
+    cartWatcherStarted = true;
+    loadStandardEvents().then(function (events) {
+      if (!events) {
+        return;
+      }
+      var eventName = (events.StandardEvents && events.StandardEvents.cartLinesUpdate) || 'shopify:cart:lines-update';
+      document.addEventListener(eventName, function (event) {
+        if (!event || event.action === 'add' || !event.promise) {
+          return;
+        }
+        event.promise
+          .then(function (result) {
+            if (result && result.detail && result.detail.source === 'qg-ricamo') {
+              return 0;
+            }
+            return cleanupOrphanEmbroideryLines();
+          })
+          .then(function (removed) {
+            if (removed > 0) {
+              return announceCartChange(events, document, 'remove', []);
+            }
+            return null;
+          })
+          .catch(function () {
+            return null;
+          });
+      });
+    });
+  }
+
+  function findProductForm(block) {
+    var inside = block.closest('form[action*="/cart/add"]');
+    if (inside) {
+      return inside;
+    }
+    // In Horizon il blocco app sta fuori dal modulo: si cerca il modulo della stessa sezione.
+    var section = block.closest('.shopify-section');
+    var scope = section || document;
+    return (
+      scope.querySelector('form[data-type="add-to-cart-form"]') ||
+      scope.querySelector('form[action*="/cart/add"]') ||
+      document.querySelector('form.shopify-product-form')
+    );
+  }
+
+  function refreshCartAfterAdd(items, source) {
+    return loadStandardEvents().then(function (events) {
+      if (events) {
+        return announceCartChange(events, source, 'add', toEventLines(items));
+      }
+      legacyRefreshCart();
+      return null;
+    });
+  }
+
+  function legacyRefreshCart() {
     if (typeof window !== 'undefined' && window.ajaxCart && typeof window.ajaxCart.load === 'function') {
       window.ajaxCart.load();
       return;
@@ -237,7 +362,7 @@
     var maxLength = Number(block.dataset.maxLength || 0);
     var serviceVariantId = String(block.dataset.serviceVariantId || '').trim();
     var previewMode = block.dataset.qgEmbroideryPreview === 'true';
-    var form = block.closest('form[action*="/cart/add"]') || document.querySelector('form.shopify-product-form');
+    var form = findProductForm(block);
 
     if (!toggle || !panel || !form) {
       return;
@@ -288,23 +413,22 @@
 
         setError(block, '');
 
-        addItems(
-          buildCartItems({
+        var cartItems = buildCartItems({
             bagVariantId: getSelectedVariantId(form),
             embroideryVariantId: serviceVariantId,
             quantity: getQuantity(form),
             text: validation.text,
             font: validation.font,
             groupId: createGroupId()
-          }),
-          { previewMode: previewMode }
-        )
+          });
+
+        addItems(cartItems, { previewMode: previewMode })
           .then(function (result) {
             if (result && result.preview) {
               setSuccess(block, 'Preview locale: borsa e ricamo simulati correttamente. Su Shopify verranno aggiunti al carrello reale.');
               return;
             }
-            refreshCartAfterAdd();
+            return refreshCartAfterAdd(cartItems, block);
           })
           .catch(function (error) {
             setError(block, error.message);
@@ -325,6 +449,7 @@
     var blocks = root.querySelectorAll ? root.querySelectorAll('[data-qg-embroidery]') : [];
     Array.prototype.forEach.call(blocks, initBlock);
     cleanupOrphanEmbroideryLines();
+    watchCartChanges();
   }
 
   return {
@@ -335,6 +460,7 @@
     findOrphanEmbroideryLines: findOrphanEmbroideryLines,
     addItems: addItems,
     refreshCartAfterAdd: refreshCartAfterAdd,
+    toEventLines: toEventLines,
     init: init
   };
 });
