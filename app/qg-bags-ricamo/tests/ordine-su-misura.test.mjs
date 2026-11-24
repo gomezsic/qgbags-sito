@@ -131,3 +131,39 @@ test('pagina cliente: precompila il cliente solo dal target cliente', () => {
   assert.equal(preselectedCustomerId('admin.customer-details.action.render', undefined), null);
   assert.equal(preselectedCustomerId('admin.customer-details.action.render', {selected: [{id: 'gid://shopify/Product/1'}]}), null);
 });
+
+test('i dati della borsa e del ricamo sono anche negli attributi ordine (export CSV)', () => {
+  const form = {
+    ...catalogo(),
+    tipo: 'su-misura',
+    variante: null,
+    titolo: 'Travel su misura',
+    prezzo: '140',
+    modello: 'TRAVEL BAG',
+    materiale: 'NEOPRENE',
+    colore: 'ARMY',
+    manico: 'HDL-11',
+    zip: 'NERO',
+    ricamo: true,
+    testoRicamo: 'R.B.',
+    fontRicamo: 'Corsivo',
+    consegna: '2026-12-20',
+    note: 'Fodera panna',
+  };
+  const input = buildDraftOrderInput(form, {groupId: 'g1'});
+  const a = (k) => attr(input.customAttributes, k);
+  assert.equal(a('qg_modello'), 'TRAVEL BAG');
+  assert.equal(a('qg_materiale'), 'NEOPRENE');
+  assert.equal(a('qg_colore'), 'ARMY');
+  assert.equal(a('qg_manico'), 'HDL-11');
+  assert.equal(a('qg_zip'), 'NERO');
+  assert.equal(a('qg_ricamo'), 'SI');
+  assert.equal(a('qg_ricamo_scritta'), 'R.B.');
+  assert.equal(a('qg_ricamo_font'), 'Corsivo');
+  assert.equal(a('qg_consegna_prevista'), '2026-12-20');
+  assert.equal(a('qg_note'), 'Fodera panna');
+  assert.equal(input.lineItems[0].sku, 'QG-SM-TRAVEL-BAG');
+  const senza = buildDraftOrderInput(catalogo());
+  assert.equal(attr(senza.customAttributes, 'qg_ricamo'), 'NO');
+  assert.equal(attr(senza.customAttributes, 'qg_ricamo_scritta'), undefined);
+});

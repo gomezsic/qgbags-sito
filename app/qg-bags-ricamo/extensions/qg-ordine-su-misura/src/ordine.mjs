@@ -145,6 +145,22 @@ export function buildDraftOrderInput(form, opts = {}) {
   if (form.metodoPagamento) customAttributes.push({key: 'qg_metodo_pagamento', value: form.metodoPagamento});
   customAttributes.push({key: 'qg_spedizione', value: form.spedizione ? 'Sì' : 'No'});
   if (clean(form.consegna)) customAttributes.push({key: 'qg_consegna_prevista', value: clean(form.consegna)});
+  // L'export CSV standard di Shopify non contiene gli attributi di riga: i dati della borsa
+  // si ripetono quindi negli attributi dell'ordine (colonna "Note Attributes" dell'export).
+  for (const [key, val] of [
+    ['qg_modello', form.modello],
+    ['qg_materiale', form.materiale],
+    ['qg_colore', form.colore],
+    ['qg_manico', form.manico],
+    ['qg_zip', form.zip],
+  ]) {
+    if (clean(val)) customAttributes.push({key, value: clean(val)});
+  }
+  customAttributes.push({key: 'qg_ricamo', value: ricamo ? 'SI' : 'NO'});
+  if (ricamo) {
+    customAttributes.push({key: 'qg_ricamo_scritta', value: testo}, {key: 'qg_ricamo_font', value: font});
+  }
+  if (clean(form.note)) customAttributes.push({key: 'qg_note', value: clean(form.note)});
   customAttributes.push({key: 'qg_creato_da', value: CREATO_DA});
 
   const rigaAttr = [];
@@ -163,6 +179,7 @@ export function buildDraftOrderInput(form, opts = {}) {
   const borsa = suMisura
     ? {
         title: clean(form.titolo),
+        sku: skuSuMisura(form.modello),
         originalUnitPriceWithCurrency: {amount: parsePrezzo(form.prezzo), currencyCode},
         quantity,
         requiresShipping: !!form.spedizione,
@@ -194,6 +211,12 @@ export function buildDraftOrderInput(form, opts = {}) {
     if (clean(c.telefono)) input.phone = clean(c.telefono);
   }
   return input;
+}
+
+// SKU dell'articolo su misura, per riconoscerlo nell'export (es. "QG-SM-TRAVEL-BAG").
+export function skuSuMisura(modello) {
+  const m = clean(modello).toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return m ? `QG-SM-${m}` : 'QG-SM';
 }
 
 export function buildCustomerInput(nuovo) {

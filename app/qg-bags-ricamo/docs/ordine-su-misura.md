@@ -55,7 +55,15 @@ Ordine (o bozza d'ordine se "Da pagare"):
   - `qg_metodo_pagamento` = codice metodo (se indicato)
   - `qg_spedizione` = Sì | No
   - `qg_consegna_prevista` = AAAA-MM-GG (se indicata)
+  - `qg_modello`, `qg_materiale`, `qg_colore`, `qg_manico`, `qg_zip` (se compilati)
+  - `qg_ricamo` = SI | NO; se SI anche `qg_ricamo_scritta` e `qg_ricamo_font`
+  - `qg_note` = note per il laboratorio (anche nella nota ordine)
   - `qg_creato_da` = "Nuovo ordine su misura"
+
+  L'export CSV standard di Shopify (Ordini > Esporta) **non contiene gli attributi di riga**:
+  per questo i dati della borsa e del ricamo sono ripetuti qui, e finiscono nella colonna "Note Attributes".
+  Via API invece si leggono anche gli attributi di riga.
+- **SKU** dell'articolo su misura: `QG-SM-<MODELLO>` (es. `QG-SM-TRAVEL-BAG`), colonna "Lineitem sku"
 - **Nota ordine**: le note per il laboratorio.
 
 Riga della borsa (prodotto del catalogo oppure articolo personalizzato con titolo e prezzo):
