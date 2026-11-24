@@ -60,3 +60,29 @@ Dopo il rilascio, Shopify chiede a Giacomo di approvare i nuovi permessi nell'ad
 Ordine creato con `draftOrderCreate`; se "Già pagato" viene completato con `draftOrderComplete` (pagamento registrato),
 altrimenti resta bozza e dall'admin si invia la fattura al cliente. Nessun server esterno: l'estensione usa le API
 dell'admin direttamente (Direct API access).
+
+## Codice
+
+- `extensions/qg-ordine-su-misura/` — estensione admin action (Preact, `@shopify/ui-extensions` 2026.7), target `admin.order-index.action.render`.
+  - `src/ordine.mjs`: funzioni pure (validazione, `buildDraftOrderInput`, `buildCustomerInput`), testate in `tests/ordine-su-misura.test.mjs`.
+  - `src/ActionExtension.jsx`: il modulo e le chiamate GraphQL (`fetch('shopify:admin/api/graphql.json')`):
+    `customerCreate` (nuovo cliente) → `draftOrderCreate` → `draftOrderComplete` se "Già pagato".
+- `extensions/qg-ordine-su-misura-bozze/` — stesso modulo da **Ordini bozza > Altre azioni**
+  (target `admin.draft-order-index.action.render`; un'estensione admin action ha un solo target, quindi è una seconda estensione che riusa il codice della prima).
+- Articolo dal catalogo: selettore varianti di Shopify (`shopify.resourcePicker({type: 'variant'})`). Cliente esistente: ricerca `customers(query:)`.
+
+## Configurazione dell'app V2 (file non committato)
+
+Il file `shopify.app.qg-bags-ricamo-v2.toml` resta solo sul Mac di Giacomo (è in `.gitignore`).
+Per l'ordine su misura contiene queste righe:
+
+```toml
+[access_scopes]
+scopes = "read_products,read_customers,write_customers,write_draft_orders,read_orders,write_orders"
+
+[access.admin]
+direct_api_mode = "offline"
+embedded_app_direct_api_access = true
+```
+
+Rilascio: `shopify app deploy --config qg-bags-ricamo-v2 --allow-updates` (mai la config `qg-bags-ricamo`, che è l'app di qgbags.com).
