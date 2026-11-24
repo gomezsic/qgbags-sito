@@ -11,9 +11,11 @@ Admin Shopify > **Ordini** > **Altre azioni** > **Nuovo ordine su misura**
 
 Lo stesso modulo si apre anche da:
 
+- **QG Bags Ricamo V2** nel menu a sinistra dell'admin (sotto Applicazioni): è la home dell'app
+  (`qg-ordine-su-misura-home`, `admin.app.home.render`) e mostra direttamente il modulo, sempre raggiungibile
+  anche quando non ci sono ancora ordini o bozze (con elenchi vuoti Shopify non mostra "Altre azioni").
+  Lì non c'è il selettore prodotti di Shopify: la borsa del catalogo si cerca per nome nel modulo.
 - **Ordini bozza** > **Altre azioni** (`qg-ordine-su-misura-bozze`, `admin.draft-order-index.action.render`)
-- **Prodotti** > **Altre azioni** (`qg-ordine-su-misura-prodotti`, `admin.product-index.action.render`):
-  sempre visibile, anche quando non ci sono ancora ordini o bozze (con elenchi vuoti Shopify non mostra "Altre azioni")
 - **Clienti** > un cliente > **Altre azioni** (`qg-ordine-su-misura-cliente`, `admin.customer-details.action.render`):
   il cliente è già scelto (`preselectedCustomerId` in `src/ordine.mjs`)
 

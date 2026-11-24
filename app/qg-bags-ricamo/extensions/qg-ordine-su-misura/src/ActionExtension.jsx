@@ -35,6 +35,9 @@ const Q_CUSTOMERS = `query($q: String!) {
   customers(first: 6, query: $q) { nodes { id displayName email phone } }
 }`;
 const Q_CUSTOMER = `query($id: ID!) { customer(id: $id) { id displayName email phone } }`;
+const Q_VARIANTS = `query($q: String!) {
+  productVariants(first: 8, query: $q) { nodes { id displayName price } }
+}`;
 const M_CUSTOMER = `mutation($input: CustomerInput!) {
   customerCreate(input: $input) { customer { id displayName } userErrors { field message } }
 }`;
@@ -45,9 +48,35 @@ const M_COMPLETE = `mutation($id: ID!) {
   draftOrderComplete(id: $id) { draftOrder { id order { id name } } userErrors { field message } }
 }`;
 
+const TARGET_HOME = 'admin.app.home.render';
+
+// Contenitore: finestra "Altre azioni" (s-admin-action) oppure pagina dell'app (s-page)
+// quando il modulo è la home dell'app (clic su "QG Bags Ricamo V2" nel menu a sinistra).
+function Shell({home, loading, primary, secondary, children}) {
+  if (home) {
+    return (
+      <s-page heading="Nuovo ordine su misura" inlineSize="base">
+        {primary}
+        {secondary}
+        <s-section>{children}</s-section>
+      </s-page>
+    );
+  }
+  return (
+    <s-admin-action heading="Nuovo ordine su misura" loading={loading}>
+      {children}
+      {primary}
+      {secondary}
+    </s-admin-action>
+  );
+}
+
 function Extension() {
-  const {close} = shopify;
-  const presetId = preselectedCustomerId(shopify.extension && shopify.extension.target, shopify.data);
+  const target = shopify.extension && shopify.extension.target;
+  const home = target === TARGET_HOME;
+  const close = () => (typeof shopify.close === 'function' ? shopify.close() : null);
+  const hasPicker = typeof shopify.resourcePicker === 'function';
+  const presetId = preselectedCustomerId(target, shopify.data);
   const [form, setForm] = useState(emptyForm());
   const [preset, setPreset] = useState(null);
   const [errors, setErrors] = useState({});
@@ -58,6 +87,9 @@ function Extension() {
   const [search, setSearch] = useState('');
   const [found, setFound] = useState([]);
   const timer = useRef(null);
+  const [cercaBorsa, setCercaBorsa] = useState('');
+  const [borse, setBorse] = useState([]);
+  const timerBorsa = useRef(null);
 
   const set = (patch) => setForm((f) => ({...f, ...patch}));
   const setNuovo = (patch) => setForm((f) => ({...f, nuovoCliente: {...f.nuovoCliente, ...patch}}));
@@ -95,6 +127,31 @@ function Extension() {
         setApiErrors([String(err.message || err)]);
       }
     }, 300);
+  }
+
+  // Senza selettore di Shopify (home dell'app): ricerca varianti via GraphQL.
+  function onCercaBorsa(e) {
+    const q = val(e);
+    setCercaBorsa(q);
+    clearTimeout(timerBorsa.current);
+    if (q.trim().length < 2) return setBorse([]);
+    timerBorsa.current = setTimeout(async () => {
+      try {
+        const j = await gql(Q_VARIANTS, {q: q.trim()});
+        setBorse(j?.data?.productVariants?.nodes || []);
+        const errs = collectErrors(j, 'productVariants');
+        if (errs.length) setApiErrors(errs);
+      } catch (err) {
+        setApiErrors([String(err.message || err)]);
+      }
+    }, 300);
+  }
+
+  function nuovoOrdine() {
+    setResult(null);
+    setErrors({});
+    setApiErrors([]);
+    setForm(preset ? {...emptyForm(), cliente: preset} : emptyForm());
   }
 
   async function scegliBorsa() {
@@ -149,7 +206,11 @@ function Extension() {
       ? `shopify://admin/orders/${numericId(result.id)}`
       : `shopify://admin/draft_orders/${numericId(result.id)}`;
     return (
-      <s-admin-action heading="Nuovo ordine su misura">
+      <Shell home={home}
+        primary={home
+          ? <s-button slot="primary-action" variant="primary" onClick={nuovoOrdine}>Nuovo ordine</s-button>
+          : <s-button slot="primary-action" onClick={() => close()}>Chiudi</s-button>}
+        secondary={home ? null : <s-button slot="secondary-actions" onClick={nuovoOrdine}>Nuovo ordine</s-button>}>
         <s-stack direction="block" gap="base">
           <s-banner tone="success" heading={result.tipo === 'ordine' ? `Ordine ${result.name} creato` : `Bozza ${result.name} creata`}>
             {result.tipo === 'ordine'
@@ -160,18 +221,18 @@ function Extension() {
           <s-link href={href}>{result.tipo === 'ordine' ? `Apri ordine ${result.name}` : `Apri bozza ${result.name}`}</s-link>
           {result.invoiceUrl && <s-text>Link di pagamento: {result.invoiceUrl}</s-text>}
         </s-stack>
-        <s-button slot="primary-action" onClick={() => close()}>Chiudi</s-button>
-        <s-button slot="secondary-actions" onClick={() => { setResult(null); setForm(preset ? {...emptyForm(), cliente: preset} : emptyForm()); setApiErrors([]); }}>
-          Nuovo ordine
-        </s-button>
-      </s-admin-action>
+      </Shell>
     );
   }
 
   const testoLen = (form.testoRicamo || '').length;
 
   return (
-    <s-admin-action heading="Nuovo ordine su misura" loading={saving}>
+    <Shell home={home} loading={saving}
+      primary={<s-button slot="primary-action" variant="primary" loading={saving} disabled={saving} onClick={crea}>Crea ordine</s-button>}
+      secondary={home
+        ? <s-button slot="secondary-actions" onClick={nuovoOrdine}>Svuota modulo</s-button>
+        : <s-button slot="secondary-actions" onClick={() => close()}>Annulla</s-button>}>
       <s-stack direction="block" gap="base">
         {apiErrors.length > 0 && <Errori list={apiErrors} />}
 
@@ -231,7 +292,20 @@ function Extension() {
             {form.tipo === 'catalogo' ? (
               <s-stack direction="block" gap="small">
                 {form.variante && <s-text type="strong">{form.variante.title}{form.variante.price ? ` · ${form.variante.price} ${currency}` : ''}</s-text>}
-                <s-button onClick={scegliBorsa}>{form.variante ? 'Cambia borsa' : 'Scegli borsa dal catalogo'}</s-button>
+                {hasPicker ? (
+                  <s-button onClick={scegliBorsa}>{form.variante ? 'Cambia borsa' : 'Scegli borsa dal catalogo'}</s-button>
+                ) : (
+                  <>
+                    <s-search-field label={form.variante ? 'Cambia borsa' : 'Cerca la borsa nel catalogo'}
+                      placeholder="es. City neoprene blu" value={cercaBorsa} onInput={onCercaBorsa} />
+                    {borse.map((v) => (
+                      <s-button variant="secondary" onClick={() => {
+                        set({variante: {id: v.id, title: v.displayName, price: v.price}});
+                        setBorse([]); setCercaBorsa('');
+                      }}>{v.displayName}{v.price ? ` · ${v.price} ${currency}` : ''}</s-button>
+                    ))}
+                  </>
+                )}
                 {errors.variante && <s-text tone="critical">{errors.variante}</s-text>}
               </s-stack>
             ) : (
@@ -299,11 +373,7 @@ function Extension() {
           {METODI_PAGAMENTO.map((m) => <s-option value={m}>{m}</s-option>)}
         </s-select>
       </s-stack>
-      <s-button slot="primary-action" variant="primary" loading={saving} disabled={saving} onClick={crea}>
-        Crea ordine
-      </s-button>
-      <s-button slot="secondary-actions" onClick={() => close()}>Annulla</s-button>
-    </s-admin-action>
+    </Shell>
   );
 }
 
