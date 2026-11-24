@@ -366,8 +366,19 @@
       return;
     }
 
+    var previewBox = block.querySelector('[data-qg-embroidery-preview-box]');
+    function updatePreview() {
+      var api = window.QGEmbroideryPreview;
+      if (!previewBox || !api || panel.hidden) return;
+      var checkedFont = block.querySelector('[data-qg-embroidery-font]:checked');
+      api.attach(previewBox).update(textInput ? textInput.value : '', checkedFont ? checkedFont.value : '');
+    }
+    block.addEventListener('input', updatePreview);
+    block.addEventListener('change', updatePreview);
+
     toggle.addEventListener('change', function () {
       panel.hidden = !toggle.checked;
+      updatePreview();
       setError(block, '');
       if (toggle.checked && textInput) {
         textInput.focus();
