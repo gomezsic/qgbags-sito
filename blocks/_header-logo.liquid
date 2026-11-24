@@ -55,6 +55,17 @@
     {% endif %}
     data-testid="header-logo"
   >
+    {%- comment -%} QG Bags: senza logo scelto nell'editor si usa assets/qg-logo.png {%- endcomment -%}
+    {% if settings.logo == blank %}
+      <img
+        src="{{ 'qg-logo.png' | asset_url }}"
+        alt="{{ alt_text_fallback | escape }}"
+        class="header-logo__image"
+        width="{{ settings.logo_height }}"
+        height="{{ settings.logo_height }}"
+        style="--header-logo-image-width: {{ settings.logo_height }}px; --header-logo-image-width-mobile: {{ settings.logo_height_mobile }}px; --header-logo-image-height: {{ settings.logo_height }}px; --header-logo-image-height-mobile: {{ settings.logo_height_mobile }}px;"
+      >
+    {% else %}
     {% render 'image',
       image: settings.logo,
       class: 'header-logo__image',
@@ -63,6 +74,7 @@
       text_fallback: shop.name,
       style: logo_style
     %}
+    {% endif %}
   </span>
 
   {% if use_inverse_logo %}
