@@ -1,0 +1,23 @@
+# QG Bags private app config.
+# Run `shopify app config link` after creating the app in Shopify to replace these placeholders.
+
+name = "QG Bags Ricamo"
+client_id = "REPLACE_WITH_SHOPIFY_CLIENT_ID"
+application_url = "https://example.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2026-04"
+
+[access_scopes]
+scopes = "write_products,read_products"
+
+[auth]
+redirect_urls = [
+  "https://example.com/auth/callback",
+  "https://example.com/auth/shopify/callback",
+  "https://example.com/api/auth/callback"
+]

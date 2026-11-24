@@ -1,0 +1,9 @@
+{
+  "name": "qg-bags-ricamo-app",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Private Shopify Theme App Extension for QG Bags embroidery options.",
+  "scripts": {
+    "test": "node --test tests/qg-embroidery.test.js"
+  }
+}

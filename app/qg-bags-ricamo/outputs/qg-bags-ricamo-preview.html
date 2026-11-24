@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QG Bags Ricamo - Preview</title>
+    <link rel="stylesheet" href="../extensions/qg-ricamo/assets/qg-embroidery.css">
+    <style>
+      body {
+        background: #f4f1eb;
+        color: #1f2428;
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+      }
+
+      .preview {
+        display: grid;
+        gap: 28px;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        margin: 0 auto;
+        max-width: 1120px;
+        padding: 40px 20px;
+      }
+
+      .preview__media {
+        aspect-ratio: 4 / 5;
+        background:
+          linear-gradient(135deg, rgba(9, 41, 83, 0.12), rgba(255, 255, 255, 0.3)),
+          #d9d2c5;
+        border: 1px solid #d7d2c8;
+        min-height: 420px;
+      }
+
+      .preview__info {
+        background: #fff;
+        border: 1px solid #d7d2c8;
+        padding: 24px;
+      }
+
+      .preview h1 {
+        font-size: 24px;
+        letter-spacing: 0;
+        line-height: 1.2;
+        margin: 0 0 8px;
+      }
+
+      .preview__price {
+        color: #092953;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 18px;
+      }
+
+      .preview__description {
+        color: #6f6a60;
+        font-size: 14px;
+        line-height: 1.55;
+        margin: 0 0 16px;
+      }
+
+      .preview__button {
+        background: #092953;
+        border: 0;
+        color: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        min-height: 48px;
+        width: 100%;
+      }
+
+      @media (max-width: 760px) {
+        .preview {
+          grid-template-columns: 1fr;
+          padding: 20px 14px;
+        }
+
+        .preview__media {
+          min-height: 260px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="preview">
+      <div class="preview__media" aria-label="Area immagine prodotto"></div>
+      <form class="preview__info shopify-product-form" action="/cart/add" method="post">
+        <input type="hidden" name="id" value="111">
+        <h1>QG Bag Personalizzabile</h1>
+        <p class="preview__price">€120,00</p>
+        <p class="preview__description">Scheda prodotto dimostrativa per verificare il blocco ricamo nella posizione prevista, prima del pulsante di acquisto.</p>
+
+        <div
+          class="qg-embroidery"
+          data-qg-embroidery
+          data-service-variant-id="999"
+          data-fonts="Corsivo, Stampatello, Elegante"
+          data-max-length="20"
+          data-price-label="+ €10"
+          data-qg-embroidery-preview="true"
+        >
+          <div class="qg-embroidery__head">
+            <label class="qg-embroidery__toggle">
+              <input class="qg-embroidery__checkbox" type="checkbox" data-qg-embroidery-toggle>
+              <span class="qg-embroidery__box" aria-hidden="true"></span>
+              <span class="qg-embroidery__title">Aggiungi ricamo</span>
+            </label>
+            <span class="qg-embroidery__price">+ €10</span>
+          </div>
+          <p class="qg-embroidery__help">Personalizza la tua borsa con un nome o una parola.</p>
+          <div class="qg-embroidery__panel" data-qg-embroidery-panel hidden>
+            <label class="qg-embroidery__field">
+              <span>Testo ricamo</span>
+              <input class="qg-embroidery__input" type="text" maxlength="20" autocomplete="off" placeholder="Es. Giulia" data-qg-embroidery-text>
+            </label>
+            <div class="qg-embroidery__field">
+              <span>Font</span>
+              <div class="qg-embroidery__fonts" data-qg-embroidery-fonts>
+                <label class="qg-embroidery__font"><input type="radio" name="preview-font" value="Corsivo" data-qg-embroidery-font checked><span>Corsivo</span></label>
+                <label class="qg-embroidery__font"><input type="radio" name="preview-font" value="Stampatello" data-qg-embroidery-font><span>Stampatello</span></label>
+                <label class="qg-embroidery__font"><input type="radio" name="preview-font" value="Elegante" data-qg-embroidery-font><span>Elegante</span></label>
+              </div>
+            </div>
+            <p class="qg-embroidery__note">Il colore del ricamo viene abbinato da QG Bags al modello scelto.</p>
+          </div>
+          <p class="qg-embroidery__error" data-qg-embroidery-error role="alert" hidden></p>
+        </div>
+
+        <button class="preview__button" type="submit">Aggiungi al carrello</button>
+      </form>
+    </main>
+    <script src="../extensions/qg-ricamo/assets/qg-embroidery.js"></script>
+  </body>
+</html>
