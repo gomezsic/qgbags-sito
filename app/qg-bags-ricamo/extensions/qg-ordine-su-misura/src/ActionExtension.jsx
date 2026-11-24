@@ -3,6 +3,8 @@ import {render} from 'preact';
 import {useEffect, useRef, useState} from 'preact/hooks';
 import {
   FONT_RICAMO,
+  MATERIALI,
+  METODI_PAGAMENTO,
   MODELLI,
   PROVENIENZE,
   RICAMO_MAX,
@@ -227,8 +229,12 @@ function Extension() {
               <s-option value="">{form.tipo === 'su-misura' ? 'Scegli…' : '—'}</s-option>
               {MODELLI.map((m) => <s-option value={m}>{m}</s-option>)}
             </s-select>
-            <s-text-field label="Tessuto" value={form.tessuto} error={errors.tessuto} onInput={(e) => set({tessuto: val(e)})} />
-            <s-text-field label="Manico" value={form.manico} onInput={(e) => set({manico: val(e)})} />
+            <s-select label="Materiale" value={form.materiale} error={errors.materiale} onChange={(e) => set({materiale: val(e)})}>
+              <s-option value="">{form.tipo === 'su-misura' ? 'Scegli…' : '—'}</s-option>
+              {MATERIALI.map((m) => <s-option value={m}>{m}</s-option>)}
+            </s-select>
+            <s-text-field label="Colore" value={form.colore} placeholder="es. BLU SCURO" onInput={(e) => set({colore: val(e).toUpperCase()})} />
+            <s-text-field label="Manico" value={form.manico} placeholder="codice, es. HDL-10" onInput={(e) => set({manico: val(e).toUpperCase()})} />
             <s-text-field label="Zip" value={form.zip} onInput={(e) => set({zip: val(e)})} />
             <s-number-field label="Quantità" value={form.quantita} min={1} step={1} error={errors.quantita}
               onInput={(e) => set({quantita: val(e)})} />
@@ -255,6 +261,8 @@ function Extension() {
 
         <s-section heading="Consegna e laboratorio">
           <s-stack direction="block" gap="small">
+            <s-checkbox label="Da spedire" checked={form.spedizione}
+              onChange={(e) => set({spedizione: e.currentTarget.checked})} />
             <s-date-field label="Consegna prevista" value={form.consegna} error={errors.consegna}
               onChange={(e) => set({consegna: val(e)})} />
             <s-text-area label="Note per il laboratorio" value={form.note} rows={3}
@@ -267,6 +275,12 @@ function Extension() {
           <s-choice value="pagato" selected={form.pagamento === 'pagato'}>Già pagato (ordine completato)</s-choice>
           <s-choice value="da-pagare" selected={form.pagamento === 'da-pagare'}>Da pagare (bozza con fattura da inviare)</s-choice>
         </s-choice-list>
+        <s-select label="Metodo di pagamento" value={form.metodoPagamento} error={errors.metodoPagamento}
+          details="Solo informativo: il pagamento lo conferma il gestionale quando trova l'incasso."
+          onChange={(e) => set({metodoPagamento: val(e)})}>
+          <s-option value="">—</s-option>
+          {METODI_PAGAMENTO.map((m) => <s-option value={m}>{m}</s-option>)}
+        </s-select>
       </s-stack>
       <s-button slot="primary-action" variant="primary" loading={saving} disabled={saving} onClick={crea}>
         Crea ordine

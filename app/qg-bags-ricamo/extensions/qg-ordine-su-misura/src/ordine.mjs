@@ -7,17 +7,36 @@ export const RICAMO_VARIANT_ID = 'gid://shopify/ProductVariant/54055138754896';
 export const RICAMO_MAX = 20;
 export const CREATO_DA = 'Nuovo ordine su misura';
 
+// Valori allineati al gestionale QGbags (colonne del foglio Ordini / tabelle qg_provenienze,
+// qg_metodi_pagamento, qg_configuratore_modelli). Quando il gestionale esporrà i codici del
+// configuratore, queste liste verranno lette da lì.
 export const PROVENIENZE = [
-  {value: 'whatsapp', label: 'WhatsApp'},
-  {value: 'telefono', label: 'Telefono'},
-  {value: 'showroom', label: 'Showroom'},
-  {value: 'email', label: 'Email'},
-  {value: 'altro', label: 'Altro'},
+  {value: 'CHAT', label: 'Chat / WhatsApp'},
+  {value: 'SHOWROOM', label: 'Showroom'},
+  {value: 'MAIL', label: 'Email'},
+  {value: 'IG', label: 'Instagram'},
+  {value: 'BAZAR', label: 'Bazar'},
+  {value: 'EVENTO', label: 'Evento'},
+  {value: 'VERSILIANI', label: 'Versiliani'},
+  {value: 'ANDREA', label: 'Andrea'},
+  {value: 'BABI', label: 'Babi'},
+];
+
+export const METODI_PAGAMENTO = [
+  'BONIFICO', 'PAYPAL', 'POS', 'CONTANTI', 'CONSEGNA', 'SHOPIFY', 'STRIPE', 'SCALAPAY', 'CAMPIONI', 'OMAGGIO',
 ];
 
 export const MODELLI = [
-  'Travel Bag', 'City Bag', 'Grace Bag', 'Beauty Classic', 'Beauty Man',
-  'Pochette', 'Pochettona', 'Pillola', 'Pillola Plus', 'Micro Pillola', 'Altro',
+  'CITY BAG', 'TRAVEL BAG', 'GRACE BAG', 'BEAUTY CLASSIC', 'BEAUTY MAN', 'BRIOCHE BAG', 'MINI BRIOCHE',
+  'GRESSINA', 'CARLOTTA', 'CUORICINO', 'VALENTINA', 'BORSINO', 'POCHETTE', 'POCHETTONA', 'PILLOLA',
+  'PILLOLA PLUS', 'PILLOLA PARLANTE', 'MICRO PILLOLA', 'CECI', 'ACCIUGA', 'SOGLIOLA', 'SUPER BAG',
+  'SAC BAG', 'LADY BAG', 'SQUARE BAG', 'ZAINO', 'TRACOLLA', 'TRACOLLINA', 'PORTACHIAVI',
+  'PORTA OCCHIALI', 'PORTA PC', 'GUINZAGLIO', 'CINTURA', 'ALTRO',
+];
+
+export const MATERIALI = [
+  'NEOPRENE', 'VELLUTO', 'FROZEN', 'PELOSINO', 'JAPAN', "TRAME'", 'CANVAS', 'COTONE', 'JEANS', 'PELLE',
+  'SPUGNA', 'TARTAN', 'LEOPARDO', 'STAMPATO', 'ALTRO',
 ];
 
 export const FONT_RICAMO = ['Corsivo', 'Stampatello', 'Compatto'];
@@ -33,7 +52,8 @@ export function emptyForm() {
     titolo: '',
     prezzo: '',
     modello: '',
-    tessuto: '',
+    materiale: '',
+    colore: '',
     manico: '',
     zip: '',
     quantita: '1',
@@ -43,6 +63,8 @@ export function emptyForm() {
     consegna: '',
     note: '',
     pagamento: '', // pagato | da-pagare
+    metodoPagamento: '',
+    spedizione: false,
   };
 }
 
@@ -82,7 +104,7 @@ export function validate(form) {
     if (!clean(form.titolo)) e.titolo = "Scrivi il nome dell'articolo.";
     if (!parsePrezzo(form.prezzo)) e.prezzo = 'Prezzo non valido (es. 150 o 150,00).';
     if (!clean(form.modello)) e.modello = 'Scegli il modello.';
-    if (!clean(form.tessuto)) e.tessuto = 'Scrivi il tessuto.';
+    if (!clean(form.materiale)) e.materiale = 'Scegli il materiale.';
   }
   if (!parseQuantita(form.quantita)) e.quantita = 'Quantità non valida.';
   if (form.ricamo) {
@@ -93,6 +115,8 @@ export function validate(form) {
   }
   if (clean(form.consegna) && !/^\d{4}-\d{2}-\d{2}$/.test(clean(form.consegna))) e.consegna = 'Data non valida.';
   if (form.pagamento !== 'pagato' && form.pagamento !== 'da-pagare') e.pagamento = 'Scegli se è già pagato.';
+  if (form.metodoPagamento && !METODI_PAGAMENTO.includes(form.metodoPagamento)) e.metodoPagamento = 'Metodo non valido.';
+  if (form.pagamento === 'pagato' && !form.metodoPagamento) e.metodoPagamento = 'Scegli come ha pagato.';
   return e;
 }
 
@@ -111,18 +135,20 @@ export function buildDraftOrderInput(form, opts = {}) {
   const font = clean(form.fontRicamo);
   const groupId = ricamo ? opts.groupId || createGroupId() : null;
 
-  const tags = ['qg-su-misura', `provenienza-${form.provenienza}`];
+  const tags = ['qg-su-misura', `provenienza-${form.provenienza.toLowerCase()}`];
   if (suMisura) tags.push('fuori-catalogo');
 
   const customAttributes = [
     {key: 'qg_provenienza', value: form.provenienza},
     {key: 'qg_tipo', value: suMisura ? 'su-misura' : 'catalogo'},
   ];
+  if (form.metodoPagamento) customAttributes.push({key: 'qg_metodo_pagamento', value: form.metodoPagamento});
+  customAttributes.push({key: 'qg_spedizione', value: form.spedizione ? 'Sì' : 'No'});
   if (clean(form.consegna)) customAttributes.push({key: 'qg_consegna_prevista', value: clean(form.consegna)});
   customAttributes.push({key: 'qg_creato_da', value: CREATO_DA});
 
   const rigaAttr = [];
-  for (const [key, val] of [['Modello', form.modello], ['Tessuto', form.tessuto], ['Manico', form.manico], ['Zip', form.zip]]) {
+  for (const [key, val] of [['Modello', form.modello], ['Materiale', form.materiale], ['Colore', form.colore], ['Manico', form.manico], ['Zip', form.zip]]) {
     if (clean(val)) rigaAttr.push({key, value: clean(val)});
   }
   if (ricamo) {
@@ -139,7 +165,7 @@ export function buildDraftOrderInput(form, opts = {}) {
         title: clean(form.titolo),
         originalUnitPriceWithCurrency: {amount: parsePrezzo(form.prezzo), currencyCode},
         quantity,
-        requiresShipping: true,
+        requiresShipping: !!form.spedizione,
         taxable: true,
       }
     : {variantId: form.variante.id, quantity};

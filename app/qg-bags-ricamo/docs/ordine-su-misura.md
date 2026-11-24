@@ -11,44 +11,71 @@ Admin Shopify > **Ordini** > **Altre azioni** > **Nuovo ordine su misura**
 
 ## Cosa si compila
 
-| Campo | Obbligatorio | Note |
+I valori sono gli stessi del gestionale QGbags (foglio Ordini, tabelle `qg_provenienze`, `qg_metodi_pagamento`,
+`qg_configuratore_*`), vedi `docs/backend-qgbags.md`.
+
+| Campo | Obbligatorio | Valori |
 |---|---|---|
-| Provenienza | sì | WhatsApp, Telefono, Showroom, Email, Altro |
+| Provenienza | sì | CHAT (WhatsApp), SHOWROOM, MAIL, IG, BAZAR, EVENTO, VERSILIANI, ANDREA, BABI |
 | Cliente | sì | cliente esistente (ricerca) oppure nuovo: nome, cognome, email e/o telefono |
 | Tipo di articolo | sì | **Dal catalogo** (si cerca la borsa) oppure **Su misura / fuori catalogo** (titolo + prezzo) |
-| Modello | su misura | Travel Bag, City Bag, Grace Bag, Beauty Classic, Beauty Man, Pochette, Pochettona, Pillola, Pillola Plus, Micro Pillola, Altro |
-| Tessuto | su misura | testo libero (poi elenco dall'Archivio del configuratore) |
-| Manico | no | testo libero |
-| Zip | no | testo libero |
+| Modello | su misura | nomi del foglio Ordini: CITY BAG, TRAVEL BAG, GRACE BAG, BEAUTY CLASSIC, BRIOCHE BAG, GRESSINA… |
+| Materiale | su misura | NEOPRENE, VELLUTO, FROZEN, PELOSINO, JAPAN, TRAME', CANVAS… |
+| Colore | no | testo, maiuscolo (es. BLU SCURO) |
+| Manico | no | codice manico (es. HDL-10) |
+| Zip | no | testo |
 | Quantità | sì | default 1 |
 | Ricamo | no | testo (max 20 caratteri) + font Corsivo / Stampatello / Compatto; aggiunge la riga "Ricamo personalizzato" a 10 € |
+| Da spedire | no | sì/no (colonna Spedizione) |
 | Consegna prevista | no | data |
 | Note per il laboratorio | no | testo libero |
-| Pagamento | sì | **Già pagato** (ordine completato) oppure **Da pagare** (bozza con fattura/link di pagamento da mandare al cliente) |
+| Pagamento | sì | **Già pagato** (ordine completato in Shopify) oppure **Da pagare** (bozza con link di pagamento) |
+| Metodo di pagamento | se già pagato | BONIFICO, PAYPAL, POS, CONTANTI, CONSEGNA, SHOPIFY, STRIPE, SCALAPAY, CAMPIONI, OMAGGIO |
+
+"Già pagato" è solo lo stato in Shopify: il pagamento lo certifica il gestionale quando trova l'incasso reale.
 
 ## Come viene salvato in Shopify (per il gestionale)
 
 Ordine (o bozza d'ordine se "Da pagare"):
 
-- **Tag ordine**: `qg-su-misura`, `provenienza-<valore>` (es. `provenienza-whatsapp`), `fuori-catalogo` se c'è un articolo personalizzato.
+- **Tag ordine**: `qg-su-misura`, `provenienza-<valore minuscolo>` (es. `provenienza-chat`), `fuori-catalogo` se c'è un articolo personalizzato.
 - **Attributi dell'ordine** (`customAttributes` / note attributes):
-  - `qg_provenienza` = whatsapp | telefono | showroom | email | altro
+  - `qg_provenienza` = codice provenienza (CHAT, SHOWROOM, …)
   - `qg_tipo` = catalogo | su-misura
+  - `qg_metodo_pagamento` = codice metodo (se indicato)
+  - `qg_spedizione` = Sì | No
   - `qg_consegna_prevista` = AAAA-MM-GG (se indicata)
   - `qg_creato_da` = "Nuovo ordine su misura"
 - **Nota ordine**: le note per il laboratorio.
 
 Riga della borsa (prodotto del catalogo oppure articolo personalizzato con titolo e prezzo):
 
-- Attributi riga: `Modello`, `Tessuto`, `Manico`, `Zip` (solo se compilati)
+- Attributi riga: `Modello`, `Materiale`, `Colore`, `Manico`, `Zip` (solo se compilati)
 - Se c'è il ricamo: `Ricamo` = Si, `Testo ricamo`, `Font ricamo`, `_qg_ricamo_group`
 
 Riga del ricamo (variante "Ricamo personalizzato", 10 €), uguale agli ordini online:
 
 - `Testo ricamo`, `Font ricamo`, `_qg_ricamo_group`, `_qg_ricamo_service` = true
 
-Gli stessi nomi (`Testo ricamo`, `Font ricamo`, `_qg_ricamo_group`) sono quelli usati dal blocco ricamo del sito,
-quindi il gestionale legge allo stesso modo ordini online e ordini su misura.
+## Corrispondenza con il foglio Ordini del gestionale
+
+| Colonna foglio Ordini / `qg_ordini` | Da Shopify |
+|---|---|
+| Numero Ordine (2611-0296) | lo assegna il gestionale; il legame è `shopify_order_name` (es. #1012) |
+| Data | data dell'ordine |
+| Cliente Nome / Cognome / Email / Telefono | cliente dell'ordine |
+| Modello, Materiale, Colore, Manico | attributi riga `Modello`, `Materiale`, `Colore`, `Manico` |
+| Ricamo (SI/NO), Ricamo Scritta | attributo riga `Ricamo` = Si → SI; `Testo ricamo` → Ricamo Scritta |
+| Prezzo | prezzo della borsa **+ la riga Ricamo personalizzato collegata** (stesso `_qg_ricamo_group`): nel foglio è una riga sola |
+| Spedizione | `qg_spedizione` (ordini online: c'è una spedizione nell'ordine) |
+| Metodo Pagamento | `qg_metodo_pagamento`; ordini online: SHOPIFY o PAYPAL secondo il gateway |
+| Pagato, Incasso V / A | **non da Shopify**: li decide il gestionale con la riconciliazione |
+| Provenienza | `qg_provenienza`; ordini online = SITO |
+| Note | nota ordine |
+| Stato, Produzione, Costo | solo gestionale |
+
+Ogni riga Shopify "borsa" diventa una riga del foglio; la riga "Ricamo personalizzato" non diventa una riga a sé,
+si somma alla borsa con lo stesso `_qg_ricamo_group`.
 
 ## Permessi dell'app
 

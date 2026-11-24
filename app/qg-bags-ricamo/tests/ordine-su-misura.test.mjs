@@ -16,7 +16,8 @@ const attr = (list, key) => (list || []).find((a) => a.key === key)?.value;
 function catalogo(extra = {}) {
   return {
     ...emptyForm(),
-    provenienza: 'whatsapp',
+    provenienza: 'CHAT',
+    metodoPagamento: 'PAYPAL',
     cliente: {id: 'gid://shopify/Customer/1', displayName: 'Anna'},
     variante: {id: 'gid://shopify/ProductVariant/99', title: 'City Bag'},
     pagamento: 'pagato',
@@ -28,8 +29,8 @@ test('ordine dal catalogo senza ricamo: tag, attributi ordine, una riga', () => 
   const input = buildDraftOrderInput(catalogo({consegna: '2026-12-15', note: 'Cucire etichetta'}), {
     customerId: 'gid://shopify/Customer/1',
   });
-  assert.deepEqual(input.tags, ['qg-su-misura', 'provenienza-whatsapp']);
-  assert.equal(attr(input.customAttributes, 'qg_provenienza'), 'whatsapp');
+  assert.deepEqual(input.tags, ['qg-su-misura', 'provenienza-chat']);
+  assert.equal(attr(input.customAttributes, 'qg_provenienza'), 'CHAT');
   assert.equal(attr(input.customAttributes, 'qg_tipo'), 'catalogo');
   assert.equal(attr(input.customAttributes, 'qg_consegna_prevista'), '2026-12-15');
   assert.equal(attr(input.customAttributes, 'qg_creato_da'), 'Nuovo ordine su misura');
@@ -42,14 +43,17 @@ test('ordine dal catalogo senza ricamo: tag, attributi ordine, una riga', () => 
 test('su misura con ricamo: articolo personalizzato + riga Ricamo personalizzato collegata', () => {
   const form = {
     ...catalogo(),
-    provenienza: 'showroom',
+    provenienza: 'SHOWROOM',
+    metodoPagamento: 'CONTANTI',
+    spedizione: true,
     tipo: 'su-misura',
     variante: null,
     titolo: 'Travel Bag su misura',
     prezzo: '165,5',
-    modello: 'Travel Bag',
-    tessuto: 'Neoprene verdone',
-    manico: '11',
+    modello: 'TRAVEL BAG',
+    materiale: 'NEOPRENE',
+    colore: 'ARMY',
+    manico: 'HDL-11',
     zip: '',
     quantita: '2',
     ricamo: true,
@@ -66,9 +70,12 @@ test('su misura con ricamo: articolo personalizzato + riga Ricamo personalizzato
   assert.equal(borsa.title, 'Travel Bag su misura');
   assert.deepEqual(borsa.originalUnitPriceWithCurrency, {amount: '165.50', currencyCode: 'EUR'});
   assert.equal(borsa.quantity, 2);
-  assert.equal(attr(borsa.customAttributes, 'Modello'), 'Travel Bag');
-  assert.equal(attr(borsa.customAttributes, 'Tessuto'), 'Neoprene verdone');
-  assert.equal(attr(borsa.customAttributes, 'Manico'), '11');
+  assert.equal(attr(borsa.customAttributes, 'Modello'), 'TRAVEL BAG');
+  assert.equal(attr(borsa.customAttributes, 'Materiale'), 'NEOPRENE');
+  assert.equal(attr(borsa.customAttributes, 'Colore'), 'ARMY');
+  assert.equal(attr(input.customAttributes, 'qg_metodo_pagamento'), 'CONTANTI');
+  assert.equal(attr(input.customAttributes, 'qg_spedizione'), 'Sì');
+  assert.equal(attr(borsa.customAttributes, 'Manico'), 'HDL-11');
   assert.equal(attr(borsa.customAttributes, 'Zip'), undefined);
   assert.equal(attr(borsa.customAttributes, 'Ricamo'), 'Si');
   assert.equal(attr(borsa.customAttributes, 'Testo ricamo'), 'Giulia R.');
@@ -84,7 +91,7 @@ test('su misura con ricamo: articolo personalizzato + riga Ricamo personalizzato
 
 test('validazione: campi obbligatori e limiti', () => {
   const e = validate({...emptyForm(), tipo: 'su-misura', quantita: '0', ricamo: true, testoRicamo: 'x'.repeat(21)});
-  for (const k of ['provenienza', 'cliente', 'titolo', 'prezzo', 'modello', 'tessuto', 'quantita', 'testoRicamo', 'pagamento']) {
+  for (const k of ['provenienza', 'cliente', 'titolo', 'prezzo', 'modello', 'materiale', 'quantita', 'testoRicamo', 'pagamento']) {
     assert.ok(e[k], `manca errore ${k}`);
   }
   const nuovo = validate({...catalogo(), clienteTipo: 'nuovo', nuovoCliente: {nome: '', cognome: '', email: 'x', telefono: ''}});
