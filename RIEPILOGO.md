@@ -1,6 +1,6 @@
 # QG Bags — nuovo sito V2: riepilogo
 
-Aggiornato al 24 novembre 2026.
+Aggiornato al 24 novembre 2026, sera.
 
 ## Il progetto in breve
 
@@ -23,7 +23,10 @@ Regola fissa: **qgbags.com non si tocca**. Tutto si prova sul negozio di svilupp
 | Ricamo nel carrello: borsa + riga "Ricamo personalizzato" 10 € | provato da Giacomo il 24/11 |
 | Anteprima del ricamo sulla City modello, filo rosso mattone, al centro tra i manici | provata da Giacomo il 24/11 ("fantastico") |
 
+| Pulsante "Nuovo ordine su misura" in Ordini > Altre azioni (anche in Ordini bozza) | app V2; da approvare i nuovi permessi e provare |
+
 **Step 1 (ricamo): quasi finito.** Manca solo l'anteprima sugli altri modelli.
+**Ordini fuori negozio: costruito**, campi allineati al gestionale (`app/qg-bags-ricamo/docs/ordine-su-misura.md`).
 
 ## Organizzazione
 
@@ -68,6 +71,14 @@ Regola fissa: **qgbags.com non si tocca**. Tutto si prova sul negozio di svilupp
 - Codice: modifiche piccole su GitHub, subito unite su `main`. Prima di caricare il tema dal repo si scaricano le modifiche fatte nell'editor, altrimenti si perdono.
 - Un solo thread di lavoro per il sito.
 
+### Gestionale QGbags (backend ordini e contabilità)
+- App Lovable https://qg.lovable.app, database Supabase. Descrizione completa: `app/qg-bags-ricamo/docs/backend-qgbags.md`.
+- Oggi nessun collegamento automatico con Shopify: gli ordini entrano dal foglio Ordini (CSV come `ordini_2026-11.csv`) o a mano.
+- Regole: il sito non scrive mai nei dati contabili né in `qg_ordini`; il pagamento lo certifica il gestionale; si usano i codici del configuratore.
+- Collegamento proposto: webhook Shopify → tabella `qg_shopify_staging` → conferma di Giacomo → `qg_ordini`.
+  Per gli ordini su misura "da pagare" serve il webhook alla **creazione** dell'ordine (`orders/create`), non solo `orders/paid`.
+- Corrispondenza campi Shopify ↔ colonne del foglio Ordini: `docs/ordine-su-misura.md`.
+
 ## Decisioni prese
 - Ricamo: 10 €, non allunga i tempi di consegna, colore deciso da QG (nell'anteprima sempre rosso mattone).
 - Borsa e ricamo restano due righe collegate nel carrello (piano Basic).
@@ -78,7 +89,7 @@ Regola fissa: **qgbags.com non si tocca**. Tutto si prova sul negozio di svilupp
 ## Prossimi passi
 1. **Foto dei modelli** pochette, beauty e borsa grande (fondo bianco, di fronte) per completare l'anteprima del ricamo per tag. Da confermare i nomi esatti dei tag.
 2. **Step 2 — Consegna**: opzioni e prezzi di spedizione, ritiro in showroom (indirizzo), giorni per pronta consegna e su misura, blocco "Tempi di consegna" in pagina prodotto (da confermare).
-3. **Ordini fuori negozio**: pulsante "Nuovo ordine su misura" nell'app. Da sapere nome del gestionale e se ha le API.
+3. **Ordini fuori negozio**: approvare i permessi dell'app e fare un ordine di prova. Poi, nel gestionale, la funzione che legge gli ordini Shopify (webhook → `qg_shopify_staging`), da approvare da Giacomo.
 4. **Configuratore pilota** Travel Bag su qgbags-v2: prodotto nascosto, prezzo, tessuti e manici del pilota.
 5. **Nuovo video** (atteso il 25/11) da mettere nella home.
 6. Ordine di prova completo fino al checkout.
@@ -87,4 +98,5 @@ Regola fissa: **qgbags.com non si tocca**. Tutto si prova sul negozio di svilupp
 
 ## Storico delle modifiche al codice (PR su qgbags-sito)
 - #1 tema Horizon con sezioni QG · #2 app ricamo nel repo · #3 app adattata a Horizon · #4 tag "ricamo si" senza badare alle maiuscole
+- #10 pulsante "Nuovo ordine su misura" allineato al gestionale
 - #5 home con collezioni vere e blocco ricamo · #6 ricamo nel carrello con Horizon · #7 anteprima ricamo sulla City · #8 anteprima più piccola, visibile e senza spazio vuoto
