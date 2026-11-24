@@ -1,0 +1,52 @@
+{%- comment -%}
+  QG Bags — il film (38 s) a tutta larghezza, con comandi e audio.
+  Il video si sceglie dall'editor del tema (File di Shopify): per mettere
+  una versione nuova basta caricarla e sceglierla qui, senza toccare il codice.
+{%- endcomment -%}
+<section class="qg qg-film" id="film">
+  {%- if section.settings.video != blank -%}
+    {%- liquid
+      assign titolo = section.settings.titolo | default: 'Film QG Bags'
+      if section.settings.copertina != blank
+        assign copertina = section.settings.copertina | image_url: width: 1920
+      endif
+    -%}
+    <video
+      class="qg-film__video"
+      controls
+      playsinline
+      preload="metadata"
+      aria-label="{{ titolo | escape }}"
+      {% if copertina %}poster="{{ copertina }}"{% elsif section.settings.video.preview_image %}poster="{{ section.settings.video.preview_image | image_url: width: 1920 }}"{% endif %}
+      {% if section.settings.autoplay %}autoplay muted loop{% endif %}
+    >
+      {%- for source in section.settings.video.sources -%}
+        <source src="{{ source.url }}" type="{{ source.mime_type }}">
+      {%- endfor -%}
+    </video>
+  {%- else -%}
+    <div class="qg-film__vuoto">
+      <span>Scegli il film dall'editor del tema</span>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .qg-film { background: #000; }
+  .qg-film__video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; object-fit: cover; }
+  .qg-film__vuoto { aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "QG · Film",
+  "tag": "div",
+  "settings": [
+    { "type": "video", "id": "video", "label": "Film", "info": "Carica il file .mp4 in Contenuti > File e sceglilo qui." },
+    { "type": "image_picker", "id": "copertina", "label": "Copertina (facoltativa)", "info": "Se vuota si usa il fotogramma scelto da Shopify." },
+    { "type": "text", "id": "titolo", "label": "Descrizione per lettori di schermo", "default": "Film QG Bags: Intelligenza Artigianale" },
+    { "type": "checkbox", "id": "autoplay", "label": "Parte da solo, senza audio, in loop", "default": false }
+  ],
+  "presets": [{ "name": "QG · Film" }]
+}
+{% endschema %}

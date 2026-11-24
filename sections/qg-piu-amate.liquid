@@ -1,0 +1,60 @@
+{%- comment -%}
+  QG Bags — "Le più amate": prodotti pronti presi da una collezione.
+  Sotto il nome compare il testo del metafield custom.descrizione_breve
+  (es. "Neoprene verdone · manico 11") se esiste.
+{%- endcomment -%}
+<section class="qg qg-amate">
+  <div class="qg-intro">
+    {%- if section.settings.occhiello != blank -%}<span class="qg-occhiello">{{ section.settings.occhiello }}</span>{%- endif -%}
+    {%- if section.settings.titolo != blank -%}<h2 class="qg-titolo">{{ section.settings.titolo }}</h2>{%- endif -%}
+  </div>
+  <div class="qg-griglia qg-amate__griglia">
+    {%- if section.settings.collezione != blank and section.settings.collezione.products_count > 0 -%}
+      {%- for product in section.settings.collezione.products limit: section.settings.quanti -%}
+        <a class="qg-amate__card" href="{{ product.url }}">
+          {%- if product.featured_image != blank -%}
+            {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw', widths: '300, 450, 600, 900' }}
+          {%- else -%}
+            <div class="qg-segnaposto">{{ 'product-apparel-2' | placeholder_svg_tag }}</div>
+          {%- endif -%}
+          <span class="qg-amate__nome">{{ product.title }}</span>
+          {%- if product.metafields.custom.descrizione_breve != blank -%}
+            <span class="qg-testo">{{ product.metafields.custom.descrizione_breve }}</span>
+          {%- endif -%}
+          <span class="qg-amate__prezzo">{{ product.price | money }}</span>
+        </a>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for i in (1..4) -%}
+        <div class="qg-amate__card">
+          <div class="qg-segnaposto">{{ 'product-apparel-' | append: i | placeholder_svg_tag }}</div>
+          <span class="qg-amate__nome">Scegli una collezione</span>
+          <span class="qg-testo">dall'editor del tema</span>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .qg-amate { border-top: 1px solid var(--qg-linea); padding-top: 64px; }
+  .qg-amate__griglia { gap: 4px; }
+  .qg-amate__card { display: flex; flex-direction: column; text-align: center; padding-bottom: 28px; }
+  .qg-amate__card > img, .qg-amate__card > .qg-segnaposto { width: 100%; aspect-ratio: 5 / 6; object-fit: cover; }
+  .qg-amate__nome { margin-top: 18px; font-size: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .qg-amate__prezzo { margin-top: 6px; font-weight: 500; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "QG · Le più amate",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "GIÀ PRONTE" },
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "Le più amate" },
+    { "type": "collection", "id": "collezione", "label": "Collezione da mostrare" },
+    { "type": "range", "id": "quanti", "label": "Quanti prodotti", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ],
+  "presets": [{ "name": "QG · Le più amate" }]
+}
+{% endschema %}

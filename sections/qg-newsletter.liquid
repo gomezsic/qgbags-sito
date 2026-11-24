@@ -1,0 +1,66 @@
+{%- comment -%}
+  QG Bags — iscrizione alla newsletter (modulo clienti Shopify, tag "newsletter")
+  e striscia delle garanzie.
+{%- endcomment -%}
+<section class="qg qg-newsletter">
+  {%- if section.settings.titolo != blank -%}<h2 class="qg-titolo qg-newsletter__titolo">{{ section.settings.titolo }}</h2>{%- endif -%}
+  {%- if section.settings.testo != blank -%}<p class="qg-testo">{{ section.settings.testo }}</p>{%- endif -%}
+  {%- form 'customer', class: 'qg-newsletter__form', id: 'qg-newsletter-form' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    {%- if form.posted_successfully? -%}
+      <p class="qg-newsletter__esito" role="status">Grazie, sei iscritto.</p>
+    {%- else -%}
+      <label for="qg-nl-email" class="visually-hidden">La tua email</label>
+      <input id="qg-nl-email" type="email" name="contact[email]" autocomplete="email" required placeholder="La tua email" value="{{ form.email }}">
+      <button type="submit" class="qg-bottone">{{ section.settings.bottone }}</button>
+      {%- if form.errors -%}<p class="qg-newsletter__esito" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>{%- endif -%}
+    {%- endif -%}
+  {%- endform -%}
+</section>
+{%- if section.blocks.size > 0 -%}
+  <section class="qg qg-garanzie">
+    <div class="qg-garanzie__griglia">
+      {%- for block in section.blocks -%}
+        <span {{ block.shopify_attributes }}>{{ block.settings.testo }}</span>
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .qg-newsletter { padding: 72px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .qg-newsletter__titolo { font-size: 32px; }
+  .qg-newsletter__form { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 12px; width: 100%; max-width: 520px; }
+  .qg-newsletter__form input[type="email"] { flex: 1 1 240px; min-width: 0; padding: 14px 16px; border: 1px solid var(--qg-blu); font: inherit; color: var(--qg-blu); border-radius: 0; background: #fff; }
+  .qg-newsletter__form .qg-bottone { padding: 14px 32px; }
+  .qg-newsletter__esito { flex-basis: 100%; margin: 12px 0 0; }
+  .qg-garanzie { border-top: 1px solid var(--qg-linea); border-bottom: 1px solid var(--qg-linea); padding: 28px 24px; }
+  .qg-garanzie__griglia { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "QG · Newsletter",
+  "tag": "div",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "Iscriviti alla newsletter" },
+    { "type": "text", "id": "testo", "label": "Testo", "default": "Per te uno sconto del 5% su tutti i nostri prodotti." },
+    { "type": "text", "id": "bottone", "label": "Testo del bottone", "default": "ISCRIVITI" }
+  ],
+  "blocks": [
+    { "type": "garanzia", "name": "Garanzia", "settings": [ { "type": "text", "id": "testo", "label": "Testo" } ] }
+  ],
+  "presets": [
+    {
+      "name": "QG · Newsletter",
+      "blocks": [
+        { "type": "garanzia", "settings": { "testo": "PAGAMENTI SICURI" } },
+        { "type": "garanzia", "settings": { "testo": "RICAMO PERSONALIZZATO" } },
+        { "type": "garanzia", "settings": { "testo": "FATTO A MANO IN ITALIA" } },
+        { "type": "garanzia", "settings": { "testo": "LAVABILI IN LAVATRICE" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

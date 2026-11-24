@@ -1,0 +1,110 @@
+{%- comment -%}
+  QG Bags — "La tua QG Bag in 3 passi": tessuto, manico, ricamo.
+  Ogni passo è un blocco. Se non si carica un'immagine, il passo mostra
+  il riquadro disegnato della bozza A (campioni tessuto, manici rigati, iniziali).
+{%- endcomment -%}
+<section class="qg qg-passi" id="crea">
+  <div class="qg-wrap">
+    <div class="qg-intro">
+      {%- if section.settings.occhiello != blank -%}<span class="qg-occhiello">{{ section.settings.occhiello }}</span>{%- endif -%}
+      {%- if section.settings.titolo != blank -%}<h2 class="qg-titolo">{{ section.settings.titolo }}</h2>{%- endif -%}
+    </div>
+    <div class="qg-griglia qg-passi__griglia">
+      {%- for block in section.blocks -%}
+        <div class="qg-passi__passo" {{ block.shopify_attributes }}>
+          {%- if block.settings.immagine != blank -%}
+            {{ block.settings.immagine | image_url: width: 800 | image_tag: loading: 'lazy', class: 'qg-passi__riquadro', sizes: '(min-width: 990px) 33vw, 100vw' }}
+          {%- else -%}
+            {%- case block.settings.disegno -%}
+              {%- when 'tessuti' -%}
+                <div class="qg-passi__riquadro qg-passi__tessuti">
+                  {%- assign campioni = 'Frozen Beige:#af9489,Frozen Marroncino:#916d58,Frozen Militare:#455240,Frozen Bluette:#215685,Frozen Malva:#983f5d,Neoprene Tortora:#4f4540,Neoprene Burgundy:#430818,Neoprene Petrolio:#0b557b,Neoprene Blu Royal:#0a37a7,Neoprene Army:#46473d,Tramé Ciliegia:#85112b,Tramé Avio:#354554,Velluto Prugna:#5b1269,Velluto Cioccolato:#372319,Velluto Blu Notte:#0b1835' | split: ',' -%}
+                  {%- for c in campioni -%}
+                    {%- assign parti = c | split: ':' -%}
+                    <span role="img" aria-label="{{ parti[0] }}" title="{{ parti[0] }}" style="background: {{ parti[1] }}"></span>
+                  {%- endfor -%}
+                </div>
+              {%- when 'manici' -%}
+                <div class="qg-passi__riquadro qg-passi__manici">
+                  <span role="img" aria-label="Manico 10: bordeaux, crema, blu petrolio" style="background: linear-gradient(90deg, #6e1a24 0 26%, #eedc8a 26% 40%, #2f6a8a 40% 60%, #eedc8a 60% 74%, #6e1a24 74% 100%)"></span>
+                  <span role="img" aria-label="Manico 11: blu navy, crema, verde militare" style="background: linear-gradient(90deg, #1c2147 0 26%, #e7cd8a 26% 40%, #3e4a30 40% 60%, #e7cd8a 60% 74%, #1c2147 74% 100%)"></span>
+                  <span role="img" aria-label="Manico 14: blu navy, crema, bordeaux" style="background: linear-gradient(90deg, #1c2147 0 26%, #eed894 26% 40%, #6b1420 40% 60%, #eed894 60% 74%, #1c2147 74% 100%)"></span>
+                  <span role="img" aria-label="Manico 15: blu, crema, verde oliva" style="background: linear-gradient(90deg, #2e5a7a 0 26%, #e6c986 26% 40%, #5a5a32 40% 60%, #e6c986 60% 74%, #2e5a7a 74% 100%)"></span>
+                </div>
+              {%- else -%}
+                <div class="qg-passi__riquadro qg-passi__ricamo">
+                  <span class="qg-passi__iniziali">A.B.</span>
+                  <span class="qg-passi__nome">Il tuo nome</span>
+                </div>
+            {%- endcase -%}
+          {%- endif -%}
+          {%- if block.settings.titolo != blank -%}<span class="qg-passi__titolo">{{ block.settings.titolo }}</span>{%- endif -%}
+          {%- if block.settings.testo != blank -%}<p class="qg-testo">{{ block.settings.testo }}</p>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.bottone != blank -%}
+      <div class="qg-passi__azione">
+        <a class="qg-bottone" href="{{ section.settings.link | default: '#' }}">{{ section.settings.bottone }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .qg-passi { padding: 72px 0; }
+  .qg-passi .qg-intro { padding-bottom: 44px; }
+  .qg-passi__griglia { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+  .qg-passi__passo { display: flex; flex-direction: column; gap: 16px; }
+  .qg-passi__riquadro { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: var(--qg-avorio); padding: 32px; box-sizing: border-box; }
+  img.qg-passi__riquadro { padding: 0; }
+  .qg-passi__tessuti { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; align-content: center; }
+  .qg-passi__tessuti span { aspect-ratio: 1 / 1; }
+  .qg-passi__manici { display: flex; justify-content: center; align-items: stretch; gap: 22px; }
+  .qg-passi__manici span { width: 52px; }
+  .qg-passi__ricamo { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; }
+  .qg-passi__iniziali { font-size: 54px; font-weight: 500; letter-spacing: 0.12em; }
+  .qg-passi__nome { font-size: 30px; font-weight: 300; font-style: italic; }
+  .qg-passi__titolo { font-size: 15px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .qg-passi__azione { text-align: center; margin-top: 44px; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "QG · 3 passi",
+  "tag": "div",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "LA NOSTRA UNICITÀ" },
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "La tua QG Bag in 3 passi" },
+    { "type": "text", "id": "bottone", "label": "Testo del bottone", "default": "INIZIA A CREARE" },
+    { "type": "url", "id": "link", "label": "Link del bottone", "info": "La pagina del configuratore." }
+  ],
+  "blocks": [
+    {
+      "type": "passo",
+      "name": "Passo",
+      "settings": [
+        { "type": "image_picker", "id": "immagine", "label": "Immagine (quadrata)", "info": "Se la lasci vuota si vede il disegno scelto sotto." },
+        { "type": "select", "id": "disegno", "label": "Disegno al posto dell'immagine", "options": [
+          { "value": "tessuti", "label": "Campioni di tessuto" },
+          { "value": "manici", "label": "Manici rigati" },
+          { "value": "ricamo", "label": "Iniziali ricamate" }
+        ], "default": "tessuti" },
+        { "type": "text", "id": "titolo", "label": "Titolo" },
+        { "type": "textarea", "id": "testo", "label": "Testo" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "QG · 3 passi",
+      "blocks": [
+        { "type": "passo", "settings": { "disegno": "tessuti", "titolo": "1 · SCEGLI IL TESSUTO", "testo": "Frozen, Neoprene, Tramé e Velluto: tessuti lavabili, nei colori scelti da noi." } },
+        { "type": "passo", "settings": { "disegno": "manici", "titolo": "2 · SCEGLI IL MANICO", "testo": "Per ogni tessuto ti proponiamo solo i manici rigati che stanno bene insieme." } },
+        { "type": "passo", "settings": { "disegno": "ricamo", "titolo": "3 · RICAMALA, SE VUOI", "testo": "Un nome, una parola o le iniziali, ricamati nel colore della cerniera." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

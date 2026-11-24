@@ -1,0 +1,178 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "apertura": {
+      "type": "qg-hero",
+      "settings": {
+        "link": "#crea"
+      }
+    },
+    "modelli": {
+      "type": "qg-modelli",
+      "settings": {},
+      "blocks": {
+        "modelli_1": {
+          "type": "modello",
+          "settings": {
+            "nome": "TRAVEL BAG"
+          }
+        },
+        "modelli_2": {
+          "type": "modello",
+          "settings": {
+            "nome": "CITY BAG"
+          }
+        },
+        "modelli_3": {
+          "type": "modello",
+          "settings": {
+            "nome": "GRACE"
+          }
+        },
+        "modelli_4": {
+          "type": "modello",
+          "settings": {
+            "nome": "BEAUTY E POCHETTE"
+          }
+        }
+      },
+      "block_order": [
+        "modelli_1",
+        "modelli_2",
+        "modelli_3",
+        "modelli_4"
+      ]
+    },
+    "tre_passi": {
+      "type": "qg-tre-passi",
+      "settings": {},
+      "blocks": {
+        "tre_passi_1": {
+          "type": "passo",
+          "settings": {
+            "disegno": "tessuti",
+            "titolo": "1 · SCEGLI IL TESSUTO",
+            "testo": "Frozen, Neoprene, Tramé e Velluto: tessuti lavabili, nei colori scelti da noi."
+          }
+        },
+        "tre_passi_2": {
+          "type": "passo",
+          "settings": {
+            "disegno": "manici",
+            "titolo": "2 · SCEGLI IL MANICO",
+            "testo": "Per ogni tessuto ti proponiamo solo i manici rigati che stanno bene insieme."
+          }
+        },
+        "tre_passi_3": {
+          "type": "passo",
+          "settings": {
+            "disegno": "ricamo",
+            "titolo": "3 · RICAMALA, SE VUOI",
+            "testo": "Un nome, una parola o le iniziali, ricamati nel colore della cerniera."
+          }
+        }
+      },
+      "block_order": [
+        "tre_passi_1",
+        "tre_passi_2",
+        "tre_passi_3"
+      ]
+    },
+    "piu_amate": {
+      "type": "qg-piu-amate",
+      "settings": {
+        "quanti": 4
+      }
+    },
+    "borsino": {
+      "type": "qg-borsino",
+      "settings": {},
+      "blocks": {
+        "borsino_1": {
+          "type": "foto",
+          "settings": {}
+        },
+        "borsino_2": {
+          "type": "foto",
+          "settings": {}
+        },
+        "borsino_3": {
+          "type": "foto",
+          "settings": {}
+        },
+        "borsino_4": {
+          "type": "foto",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "borsino_1",
+        "borsino_2",
+        "borsino_3",
+        "borsino_4"
+      ]
+    },
+    "film": {
+      "type": "qg-film",
+      "settings": {}
+    },
+    "atelier": {
+      "type": "qg-atelier",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "qg-newsletter",
+      "settings": {},
+      "blocks": {
+        "newsletter_1": {
+          "type": "garanzia",
+          "settings": {
+            "testo": "PAGAMENTI SICURI"
+          }
+        },
+        "newsletter_2": {
+          "type": "garanzia",
+          "settings": {
+            "testo": "RICAMO PERSONALIZZATO"
+          }
+        },
+        "newsletter_3": {
+          "type": "garanzia",
+          "settings": {
+            "testo": "FATTO A MANO IN ITALIA"
+          }
+        },
+        "newsletter_4": {
+          "type": "garanzia",
+          "settings": {
+            "testo": "LAVABILI IN LAVATRICE"
+          }
+        }
+      },
+      "block_order": [
+        "newsletter_1",
+        "newsletter_2",
+        "newsletter_3",
+        "newsletter_4"
+      ]
+    }
+  },
+  "order": [
+    "apertura",
+    "modelli",
+    "tre_passi",
+    "piu_amate",
+    "borsino",
+    "film",
+    "atelier",
+    "newsletter"
+  ]
+}
