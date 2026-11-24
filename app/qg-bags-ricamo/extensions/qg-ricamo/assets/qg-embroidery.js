@@ -362,9 +362,7 @@
     var maxLength = Number(block.dataset.maxLength || 0);
     var serviceVariantId = String(block.dataset.serviceVariantId || '').trim();
     var previewMode = block.dataset.qgEmbroideryPreview === 'true';
-    var form = findProductForm(block);
-
-    if (!toggle || !panel || !form) {
+    if (!toggle || !panel || !findProductForm(block)) {
       return;
     }
 
@@ -376,9 +374,17 @@
       }
     });
 
-    form.addEventListener(
+    // Ascolto su window in fase di cattura: Horizon gestisce il submit con un
+    // listener in cattura su document (on:submit), che altrimenti partirebbe
+    // prima del nostro e aggiungerebbe al carrello solo la borsa.
+    window.addEventListener(
       'submit',
       function (event) {
+        var form = findProductForm(block);
+        if (!form || event.target !== form || !document.contains(block)) {
+          return;
+        }
+
         if (!toggle.checked) {
           return;
         }
