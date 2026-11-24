@@ -217,14 +217,14 @@
 }
 
 .qg-embroidery__preview {
-  margin: 0 0 14px;
+  max-width: 380px;
+  margin: 0;
 }
 
 .qg-embroidery__preview canvas {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 1 / 1;
   border-radius: 6px;
   background: #fff;
 }
@@ -233,4 +233,9 @@
   margin: 6px 0 0;
   font-size: 12px;
   opacity: 0.7;
+}
+
+.qg-embroidery__panel[hidden],
+.qg-embroidery__error[hidden] {
+  display: none;
 }
