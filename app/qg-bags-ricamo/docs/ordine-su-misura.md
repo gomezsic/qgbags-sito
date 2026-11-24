@@ -9,6 +9,14 @@ Ogni ordine nasce in Shopify con tutti i dati già compilati, così il gestional
 Admin Shopify > **Ordini** > **Altre azioni** > **Nuovo ordine su misura**
 (estensione admin `qg-ordine-su-misura`, target `admin.order-index.action.render`).
 
+Lo stesso modulo si apre anche da:
+
+- **Ordini bozza** > **Altre azioni** (`qg-ordine-su-misura-bozze`, `admin.draft-order-index.action.render`)
+- **Prodotti** > **Altre azioni** (`qg-ordine-su-misura-prodotti`, `admin.product-index.action.render`):
+  sempre visibile, anche quando non ci sono ancora ordini o bozze (con elenchi vuoti Shopify non mostra "Altre azioni")
+- **Clienti** > un cliente > **Altre azioni** (`qg-ordine-su-misura-cliente`, `admin.customer-details.action.render`):
+  il cliente è già scelto (`preselectedCustomerId` in `src/ordine.mjs`)
+
 ## Cosa si compila
 
 I valori sono gli stessi del gestionale QGbags (foglio Ordini, tabelle `qg_provenienze`, `qg_metodi_pagamento`,

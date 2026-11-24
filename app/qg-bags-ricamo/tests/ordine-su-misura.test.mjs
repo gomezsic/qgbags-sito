@@ -9,6 +9,7 @@ import {
   numericId,
   parsePrezzo,
   validate,
+  preselectedCustomerId,
 } from '../extensions/qg-ordine-su-misura/src/ordine.mjs';
 
 const attr = (list, key) => (list || []).find((a) => a.key === key)?.value;
@@ -119,4 +120,14 @@ test('utilità: prezzo, id numerico, errori GraphQL', () => {
     collectErrors({errors: [{message: 'Access denied'}], data: {draftOrderCreate: {userErrors: [{field: ['input', 'email'], message: 'non valida'}]}}}, 'draftOrderCreate'),
     ['Access denied', 'non valida (input.email)'],
   );
+});
+
+test('pagina cliente: precompila il cliente solo dal target cliente', () => {
+  const data = {selected: [{id: 'gid://shopify/Customer/42'}]};
+  assert.equal(preselectedCustomerId('admin.customer-details.action.render', data), 'gid://shopify/Customer/42');
+  assert.equal(preselectedCustomerId('admin.product-index.action.render', data), null);
+  assert.equal(preselectedCustomerId('admin.order-index.action.render', {selected: []}), null);
+  assert.equal(preselectedCustomerId('admin.customer-details.action.render', {selected: []}), null);
+  assert.equal(preselectedCustomerId('admin.customer-details.action.render', undefined), null);
+  assert.equal(preselectedCustomerId('admin.customer-details.action.render', {selected: [{id: 'gid://shopify/Product/1'}]}), null);
 });

@@ -13,6 +13,7 @@ import {
   collectErrors,
   emptyForm,
   numericId,
+  preselectedCustomerId,
   validate,
 } from './ordine.mjs';
 
@@ -33,6 +34,7 @@ const Q_SHOP = `query { shop { currencyCode } }`;
 const Q_CUSTOMERS = `query($q: String!) {
   customers(first: 6, query: $q) { nodes { id displayName email phone } }
 }`;
+const Q_CUSTOMER = `query($id: ID!) { customer(id: $id) { id displayName email phone } }`;
 const M_CUSTOMER = `mutation($input: CustomerInput!) {
   customerCreate(input: $input) { customer { id displayName } userErrors { field message } }
 }`;
@@ -45,7 +47,9 @@ const M_COMPLETE = `mutation($id: ID!) {
 
 function Extension() {
   const {close} = shopify;
+  const presetId = preselectedCustomerId(shopify.extension && shopify.extension.target, shopify.data);
   const [form, setForm] = useState(emptyForm());
+  const [preset, setPreset] = useState(null);
   const [errors, setErrors] = useState({});
   const [apiErrors, setApiErrors] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -58,6 +62,19 @@ function Extension() {
   const set = (patch) => setForm((f) => ({...f, ...patch}));
   const setNuovo = (patch) => setForm((f) => ({...f, nuovoCliente: {...f.nuovoCliente, ...patch}}));
   const val = (e) => e.currentTarget.value;
+
+  // Aperto dalla pagina di un cliente: il cliente è già scelto.
+  useEffect(() => {
+    if (!presetId) return;
+    gql(Q_CUSTOMER, {id: presetId})
+      .then((j) => {
+        const c = j?.data?.customer;
+        if (c) { setPreset(c); set({clienteTipo: 'esistente', cliente: c}); }
+        const errs = collectErrors(j, 'customer');
+        if (errs.length) setApiErrors(errs);
+      })
+      .catch((err) => setApiErrors([String(err.message || err)]));
+  }, [presetId]);
 
   useEffect(() => {
     gql(Q_SHOP).then((j) => j?.data?.shop?.currencyCode && setCurrency(j.data.shop.currencyCode)).catch(() => {});
@@ -144,7 +161,7 @@ function Extension() {
           {result.invoiceUrl && <s-text>Link di pagamento: {result.invoiceUrl}</s-text>}
         </s-stack>
         <s-button slot="primary-action" onClick={() => close()}>Chiudi</s-button>
-        <s-button slot="secondary-actions" onClick={() => { setResult(null); setForm(emptyForm()); setApiErrors([]); }}>
+        <s-button slot="secondary-actions" onClick={() => { setResult(null); setForm(preset ? {...emptyForm(), cliente: preset} : emptyForm()); setApiErrors([]); }}>
           Nuovo ordine
         </s-button>
       </s-admin-action>
