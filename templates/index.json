@@ -30,7 +30,8 @@
           "settings": {
             "nome": "TRAVEL BAG",
             "file": "qg-modello-travel.jpg",
-            "alt": "Travel Bag in neoprene verdone appesa a una porta di legno"
+            "alt": "Travel Bag in neoprene verdone appesa a una porta di legno",
+            "collezione": "travel-bag"
           }
         },
         "modelli_2": {
@@ -38,7 +39,8 @@
           "settings": {
             "nome": "CITY BAG",
             "file": "qg-modello-city.jpg",
-            "alt": "City Bag in tramè army con manici a righe appesa a una porta di legno"
+            "alt": "City Bag in tramè army con manici a righe appesa a una porta di legno",
+            "collezione": "city-bag"
           }
         },
         "modelli_3": {
@@ -46,7 +48,8 @@
           "settings": {
             "nome": "GRACE",
             "file": "qg-modello-grace.jpg",
-            "alt": "Grace Bag in tramè con manici blu e panna appesa a una porta di legno"
+            "alt": "Grace Bag in tramè con manici blu e panna appesa a una porta di legno",
+            "collezione": "grace-bag"
           }
         },
         "modelli_4": {
@@ -54,7 +57,8 @@
           "settings": {
             "nome": "BEAUTY E POCHETTE",
             "file": "qg-modello-beauty.jpg",
-            "alt": "Beauty Classic in neoprene petrolio davanti a una porta di legno"
+            "alt": "Beauty Classic in neoprene petrolio davanti a una porta di legno",
+            "collezione": "beauty-e-pochette"
           }
         }
       },
@@ -103,7 +107,8 @@
     "piu_amate": {
       "type": "qg-piu-amate",
       "settings": {
-        "quanti": 4
+        "quanti": 4,
+        "collezione": "le-piu-amate"
       },
       "blocks": {
         "piu_amate_1": {
