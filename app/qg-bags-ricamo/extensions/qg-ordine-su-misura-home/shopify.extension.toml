@@ -3,14 +3,14 @@ api_version = "2026-07"
 [[extensions]]
 # Change the merchant-facing name of the extension in locales/en.default.json
 name = "t:name"
-handle = "qg-ordine-su-misura-prodotti"
+handle = "qg-ordine-su-misura-home"
 type = "ui_extension"
-uid = "9980e61a-d23f-7e77-0483-ddeab80f7057acbc6457"
+uid = "2ea8cffe-0cd7-f2b7-d383-a38bf0f3ae8ce9478263"
 
-# Only 1 target can be specified for each Admin action extension
+# Home dell app: si apre cliccando "QG Bags Ricamo V2" nel menu a sinistra dell admin
 [[extensions.targeting]]
 module = "./src/ActionExtension.jsx"
-target = "admin.product-index.action.render"
+target = "admin.app.home.render"
 
 
 # Valid extension targets:
