@@ -1,0 +1,25 @@
+/* QG Bags — stili delle sezioni qg-* (bozza home A: blu QG, Jost) */
+:root {
+  --qg-blu: #1b478e;
+  --qg-blu-scuro: #12305f;
+  --qg-avorio: #f6f3f0;
+  --qg-linea: #eaeaea;
+  --qg-grigio: #5b5b66;
+}
+.qg { color: var(--qg-blu); font-family: var(--font-body--family); font-size: 17px; line-height: 1.5; }
+.qg a { color: var(--qg-blu); text-decoration: none; }
+.qg a:hover { color: var(--qg-blu-scuro); }
+.qg img { display: block; max-width: 100%; }
+.qg-wrap { max-width: 1360px; margin: 0 auto; padding-inline: 24px; }
+.qg-intro { text-align: center; display: flex; flex-direction: column; gap: 10px; padding: 0 24px 36px; }
+.qg-occhiello { font-size: 14px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+.qg-titolo { margin: 0; font-size: clamp(30px, 3.4vw, 44px); font-weight: 400; line-height: 1.15; color: inherit; font-family: inherit; }
+.qg-testo { margin: 0; font-weight: 300; }
+.qg-griglia { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.qg-bottone { display: inline-block; background: var(--qg-blu); color: #fff !important; padding: 15px 44px; font-size: 14px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--qg-blu); cursor: pointer; font-family: inherit; }
+.qg-bottone:hover { background: var(--qg-blu-scuro); }
+.qg-bottone--chiaro { background: #fff; color: var(--qg-blu) !important; border-color: #fff; padding: 14px 36px; }
+.qg-bottone--chiaro:hover { background: var(--qg-avorio); }
+.qg-link-sottolineato { align-self: flex-start; border-bottom: 1px solid var(--qg-blu); padding-bottom: 3px; font-size: 14px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.qg-segnaposto { background: var(--qg-avorio); display: flex; align-items: center; justify-content: center; color: var(--qg-grigio); font-size: 13px; letter-spacing: 0.08em; text-align: center; padding: 16px; }
+.qg-segnaposto svg { width: 60%; height: auto; opacity: 0.35; }

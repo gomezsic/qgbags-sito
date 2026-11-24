@@ -1,0 +1,44 @@
+{%- comment -%}
+  QG Bags — "Fatte a mano": foto dell'atelier a sinistra, testo a destra su fondo avorio.
+{%- endcomment -%}
+<section class="qg qg-atelier">
+  <div class="qg-atelier__foto">
+    {%- render 'qg-immagine', image: section.settings.immagine, file: section.settings.file, alt: section.settings.alt, sizes: '(min-width: 900px) 50vw, 100vw', placeholder: 'detailed-apparel-1' -%}
+  </div>
+  <div class="qg-atelier__testo">
+    {%- if section.settings.occhiello != blank -%}<span class="qg-occhiello">{{ section.settings.occhiello }}</span>{%- endif -%}
+    {%- if section.settings.titolo != blank -%}<h2 class="qg-titolo">{{ section.settings.titolo }}</h2>{%- endif -%}
+    {%- if section.settings.testo != blank -%}<div class="qg-testo">{{ section.settings.testo }}</div>{%- endif -%}
+    {%- if section.settings.link_testo != blank -%}
+      <a class="qg-link-sottolineato" href="{{ section.settings.link | default: '#' }}">{{ section.settings.link_testo }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .qg-atelier { display: flex; flex-wrap: wrap; background: var(--qg-avorio); }
+  .qg-atelier__foto { flex: 1 1 420px; min-height: 480px; position: relative; background: #3d4a5c; }
+  .qg-atelier__foto > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .qg-atelier__testo { flex: 1 1 420px; padding: 72px 56px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+  .qg-atelier__testo .qg-testo { max-width: 480px; }
+  .qg-atelier__testo .qg-testo p { margin: 0; }
+  @media (max-width: 749px) { .qg-atelier__foto { min-height: 360px; } .qg-atelier__testo { padding: 48px 24px; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "QG · Atelier",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "immagine", "label": "Foto" },
+    { "type": "text", "id": "file", "label": "File predefinito nel tema", "info": "Si usa solo se non scegli una foto." },
+    { "type": "text", "id": "alt", "label": "Descrizione della foto" },
+    { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "FATTE A MANO" },
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "Un atelier, un gesto, una borsa alla volta" },
+    { "type": "richtext", "id": "testo", "label": "Testo", "default": "<p>È l'unico modo in cui sappiamo fare le nostre borse: a mano, una per una. Tutte lavabili in lavatrice a 30 gradi.</p>" },
+    { "type": "text", "id": "link_testo", "label": "Testo del link", "default": "SCOPRI L'ATELIER" },
+    { "type": "url", "id": "link", "label": "Link" }
+  ],
+  "presets": [{ "name": "QG · Atelier" }]
+}
+{% endschema %}

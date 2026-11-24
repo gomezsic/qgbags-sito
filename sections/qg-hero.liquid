@@ -1,0 +1,71 @@
+{%- comment -%}
+  QG Bags — apertura della home (bozza A): tre foto affiancate, velo scuro,
+  titolo "Intelligenza Artigianale", sottotitolo e bottone.
+{%- endcomment -%}
+<section class="qg qg-hero" style="--qg-hero-altezza: {{ section.settings.altezza }}px; --qg-hero-velo: {{ section.settings.velo | divided_by: 100.0 }};">
+  <div class="qg-hero__foto">
+    {%- for i in (1..3) -%}
+      {%- liquid
+        assign chiave = 'foto_' | append: i
+        assign foto = section.settings[chiave]
+      -%}
+      {%- liquid
+        assign chiave_file = 'foto_' | append: i | append: '_file'
+        assign chiave_alt = 'foto_' | append: i | append: '_alt'
+        render 'qg-immagine', image: foto, file: section.settings[chiave_file], alt: section.settings[chiave_alt], loading: 'eager', sizes: '(min-width: 750px) 33vw, 100vw', placeholder: 'lifestyle-1'
+      -%}
+    {%- endfor -%}
+  </div>
+  <div class="qg-hero__velo" aria-hidden="true"></div>
+  <div class="qg-hero__testo">
+    {%- if section.settings.titolo != blank -%}
+      <h1 class="qg-hero__titolo">{{ section.settings.titolo }}</h1>
+    {%- endif -%}
+    {%- if section.settings.sottotitolo != blank -%}
+      <p class="qg-hero__sottotitolo">{{ section.settings.sottotitolo }}</p>
+    {%- endif -%}
+    {%- if section.settings.bottone != blank -%}
+      <a class="qg-bottone qg-bottone--chiaro" href="{{ section.settings.link | default: '#' }}">{{ section.settings.bottone }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .qg-hero { position: relative; isolation: isolate; overflow: hidden; min-height: var(--qg-hero-altezza, 720px); background: #3d4a5c; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; text-align: center; padding: 64px 24px; color: #fff; box-sizing: border-box; }
+  .qg-hero__foto { position: absolute; inset: 0; z-index: -2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .qg-hero__foto > * { width: 100%; height: 100%; object-fit: cover; }
+  .qg-hero__velo { position: absolute; inset: 0; z-index: -1; background: rgba(15, 22, 45, var(--qg-hero-velo, 0.4)); }
+  .qg-hero__titolo { margin: 0; font-family: inherit; font-size: clamp(40px, 5.2vw, 68px); font-weight: 400; line-height: 1.1; color: #fff; }
+  .qg-hero__sottotitolo { margin: 16px 0 28px; font-size: 21px; font-weight: 300; max-width: 620px; }
+  @media (max-width: 749px) {
+    .qg-hero { min-height: 560px; }
+    .qg-hero__foto { grid-template-columns: 1fr; }
+    .qg-hero__foto > *:not(:first-child) { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "QG · Apertura",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "foto_1", "label": "Foto 1 (sinistra; su telefono è l'unica)" },
+    { "type": "image_picker", "id": "foto_2", "label": "Foto 2 (centro)" },
+    { "type": "image_picker", "id": "foto_3", "label": "Foto 3 (destra)" },
+    { "type": "header", "content": "Foto predefinite nel tema", "info": "Si usano solo se sopra non scegli un'immagine." },
+    { "type": "text", "id": "foto_1_file", "label": "File foto 1" },
+    { "type": "text", "id": "foto_1_alt", "label": "Descrizione foto 1" },
+    { "type": "text", "id": "foto_2_file", "label": "File foto 2" },
+    { "type": "text", "id": "foto_2_alt", "label": "Descrizione foto 2" },
+    { "type": "text", "id": "foto_3_file", "label": "File foto 3" },
+    { "type": "text", "id": "foto_3_alt", "label": "Descrizione foto 3" },
+    { "type": "range", "id": "velo", "label": "Velo scuro sulle foto", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 40 },
+    { "type": "range", "id": "altezza", "label": "Altezza su computer", "min": 480, "max": 900, "step": 20, "unit": "px", "default": 720 },
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "Intelligenza Artigianale" },
+    { "type": "text", "id": "sottotitolo", "label": "Sottotitolo", "default": "Tu immagini. Le nostre mani realizzano." },
+    { "type": "text", "id": "bottone", "label": "Testo del bottone", "default": "CREA LA TUA BORSA" },
+    { "type": "url", "id": "link", "label": "Link del bottone" }
+  ],
+  "presets": [{ "name": "QG · Apertura" }]
+}
+{% endschema %}

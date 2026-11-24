@@ -1,0 +1,69 @@
+{%- comment -%}
+  QG Bags — "Il borsino · Uno per ogni momento": video 16:9 e foto 4:5 affiancate.
+{%- endcomment -%}
+<section class="qg qg-borsino">
+  <div class="qg-intro">
+    {%- if section.settings.occhiello != blank -%}<span class="qg-occhiello">{{ section.settings.occhiello }}</span>{%- endif -%}
+    {%- if section.settings.titolo != blank -%}<h2 class="qg-titolo">{{ section.settings.titolo }}</h2>{%- endif -%}
+  </div>
+  {%- if section.settings.video != blank -%}
+    <div class="qg-borsino__video">
+      {{ section.settings.video | video_tag: controls: true, playsinline: true, preload: 'metadata', image_size: '1920x' }}
+    </div>
+  {%- elsif section.settings.video_file != blank -%}
+    <div class="qg-borsino__video">
+      <video controls playsinline preload="metadata" aria-label="{{ section.settings.video_alt | escape }}" {% if section.settings.copertina_file != blank %}poster="{{ section.settings.copertina_file | asset_url }}"{% endif %}>
+        <source src="{{ section.settings.video_file | asset_url }}" type="video/mp4">
+      </video>
+    </div>
+  {%- endif -%}
+  <div class="qg-griglia qg-borsino__foto">
+    {%- for block in section.blocks -%}
+      <div {{ block.shopify_attributes }}>
+        {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{%- endif -%}
+        {%- render 'qg-immagine', image: block.settings.immagine, file: block.settings.file, alt: block.settings.alt, sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw', placeholder: 'lifestyle-2' -%}
+        {%- if block.settings.link != blank -%}</a>{%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .qg-borsino { padding-top: 72px; }
+  .qg-borsino__video { background: #000; margin-bottom: 4px; }
+  .qg-borsino__video video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  .qg-borsino__foto { gap: 4px; }
+  .qg-borsino__foto img, .qg-borsino__foto .qg-segnaposto { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "QG · Il borsino",
+  "tag": "div",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "IL BORSINO" },
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "Uno per ogni momento" },
+    { "type": "video", "id": "video", "label": "Video (16:9)" },
+    { "type": "header", "content": "Video predefinito nel tema", "info": "Si usa solo se sopra non scegli un video." },
+    { "type": "text", "id": "video_file", "label": "File video" },
+    { "type": "text", "id": "copertina_file", "label": "File copertina" },
+    { "type": "text", "id": "video_alt", "label": "Descrizione del video" }
+  ],
+  "blocks": [
+    {
+      "type": "foto",
+      "name": "Foto",
+      "settings": [
+        { "type": "image_picker", "id": "immagine", "label": "Foto (4:5)" },
+        { "type": "text", "id": "file", "label": "File predefinito nel tema" },
+        { "type": "text", "id": "alt", "label": "Descrizione della foto" },
+        { "type": "url", "id": "link", "label": "Link (facoltativo)" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "QG · Il borsino", "blocks": [ { "type": "foto" }, { "type": "foto" }, { "type": "foto" }, { "type": "foto" } ] }
+  ]
+}
+{% endschema %}

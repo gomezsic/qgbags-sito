@@ -1,0 +1,69 @@
+{%- comment -%}
+  QG Bags — i modelli (Travel, City, Grace, Beauty e Pochette): foto 4:5 e nome.
+  Ogni modello è un blocco: si aggiungono, tolgono e riordinano dall'editor.
+{%- endcomment -%}
+<section class="qg qg-modelli" id="modelli">
+  <div class="qg-wrap qg-griglia qg-modelli__griglia">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign immagine = block.settings.immagine
+        if immagine == blank and block.settings.collezione != blank
+          assign immagine = block.settings.collezione.featured_image
+        endif
+        assign link = block.settings.link
+        if link == blank and block.settings.collezione != blank
+          assign link = block.settings.collezione.url
+        endif
+        assign nome = block.settings.nome
+        if nome == blank and block.settings.collezione != blank
+          assign nome = block.settings.collezione.title
+        endif
+      -%}
+      <a class="qg-modelli__card" href="{{ link | default: '#' }}" {{ block.shopify_attributes }}>
+        {%- render 'qg-immagine', image: immagine, file: block.settings.file, alt: block.settings.alt, sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw', placeholder: 'product-apparel-1' -%}
+        <span class="qg-modelli__nome">{{ nome }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .qg-modelli { padding: 64px 0 24px; }
+  .qg-modelli__griglia { gap: 20px; }
+  .qg-modelli__card { display: flex; flex-direction: column; gap: 14px; text-align: center; }
+  .qg-modelli__card > img, .qg-modelli__card > .qg-segnaposto { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .qg-modelli__nome { font-size: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "QG · Modelli",
+  "tag": "div",
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "modello",
+      "name": "Modello",
+      "settings": [
+        { "type": "collection", "id": "collezione", "label": "Collezione del modello", "info": "Se la scegli, foto, nome e link si prendono da qui quando non li compili sotto." },
+        { "type": "image_picker", "id": "immagine", "label": "Foto (4:5)" },
+        { "type": "text", "id": "file", "label": "File predefinito nel tema", "info": "Si usa solo se non scegli una foto." },
+        { "type": "text", "id": "alt", "label": "Descrizione della foto" },
+        { "type": "text", "id": "nome", "label": "Nome" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "QG · Modelli",
+      "blocks": [
+        { "type": "modello", "settings": { "nome": "TRAVEL BAG" } },
+        { "type": "modello", "settings": { "nome": "CITY BAG" } },
+        { "type": "modello", "settings": { "nome": "GRACE" } },
+        { "type": "modello", "settings": { "nome": "BEAUTY E POCHETTE" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
